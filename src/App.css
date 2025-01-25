@@ -1,56 +1,11 @@
+@import "tailwindcss";
+
 #root {
   width: auto;
   margin: 0.5 em;
   padding: 2rem;
   text-align: center;
   border: 5px solid white;
-  border-radius: 5em
-}
-
-#App {
-  padding: 2rem;
-  margin: 1em;
-  width: auto;
-  height: 1000px;
-  border: 5px solid white;
-  border-radius: 5em
-}
-
-#Sub {
-  display: flex;
-  height: 100%
-
-}
-
-#Interface {
-  padding: 2rem;
-  width: 33%;
-  height: 80%;
-  margin: 1em;
-  border: 5px solid white;
-  border-radius: 5em
-}
-
-#ChoreWheel {
-  padding: 2rem;
-  width: 66%;
-  height: 80%;
-  margin: 1em;
-  border: 5px solid white;
-  border-radius: 5em
-}
-
-#Household {
-  padding: 2rem;
-  margin: 1em;
-  border: 5px solid white;
-  border-radius: 5em
-}
-
-#ChoreList {
-  padding: 2rem;
-  margin: 1em;
-  border: 5px solid white;
-  border-radius: 5em
+  border-radius: 50px
 }
 
