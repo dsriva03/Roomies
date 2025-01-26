@@ -14,21 +14,32 @@ function Household() {
         inset 0 2px 2px rgba(255, 255, 255, 0.95)
         `,
         transform: isPressed ? 'translateY(2px)' : 'none',
-        transition: 'all 0.1s ease-in-out'
+        transition: 'all 0.3s ease-in-out'
+    };
+
+    const inputStyle = {
+        boxShadow:  
+         'inset 0 2px 4px rgba(0, 0, 0, 0.2)' ,
     };
 
     return (
         <>
             <div className="p-2 m-4 h-fit" id="Household">
                 <h1 className="font-sans text-sky-900">Your Household</h1>
-                <input className="font-sans text-sky-900" value="Roomie Name..."></input>
-                <button 
-                style={buttonStyle} 
-                className="font-sans py-2 px-4  text-white shadow-2xl bg-fuchsia-300 hover:bg-fuchsia-400 border-white rounded-[50px]"
-                onMouseDown={() => setIsPressed(true)}
-                onMouseUp={() => setIsPressed(false)}
-                onMouseLeave={() => setIsPressed(false)}
-                >Add Roomie</button>
+                <div className='flex-row'>
+                    <input 
+                    style={inputStyle} 
+                    className="font-sans text-sky-900 py-2 px-4 shadow-2xl bg-white border-white rounded-[50px]" 
+                    value="Roomie Name..."
+                    ></input>
+                    <button 
+                    style={buttonStyle} 
+                    className="font-sans py-2 px-4  text-white shadow-2xl bg-fuchsia-300 hover:bg-fuchsia-400 border-white rounded-[50px]"
+                    onMouseDown={() => setIsPressed(true)}
+                    onMouseUp={() => setIsPressed(false)}
+                    onMouseLeave={() => setIsPressed(false)}
+                    >Add Roomie</button>
+                </div>
             </div>
         </>
     )
