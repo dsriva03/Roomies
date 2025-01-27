@@ -2,13 +2,14 @@
 // const db = require('../models/roomiesModels');
 //create a roomiesController object to export multiple controller functions at once
 const roomiesController = {};
-const pool = require('../models/roomiesModels')
+//const pool = require('../models/roomiesModels')
+import pool from '../models/roomiesModels.js'
 //create async functions for createUser, createChore, assignChore, viewChore
 //testing data
 
 roomiesController.createUser = async (req, res, next) => {
     //validate data to make sure no missing data
-    const {username, email} = req.body; //? placeholder data
+    const {username, email} = req.body; 
     console.log(` this is the name and email info from query: [${username}, ${email}]`)
     if (!username || !email){
         return res.status(400).json({error: 'Missing data in user form. Please try again.'})
@@ -65,6 +66,9 @@ roomiesController.getUsers = async (req, res, next) => {
     try {
         const result = await pool.query(getUsersQuery)
         res.locals.users = result.rows
+        // console.log("Row 1 is: ", result.rows[0]);
+        // console.log("Row 2 is: ", result.rows[1]);
+        console.log ("All Results: ", res.locals.users);
         return next()
     } catch(err){
         console.error('This is the error: ', err)
@@ -85,10 +89,14 @@ roomiesController.createChore = async (req, res, next) => {
     }
     const createChoreQuery = 'INSERT INTO chores (task_name, type) VALUES ($1, $2) RETURNING *'
         try {
+            console.log('we have entered the createChoremiddleWare');
             const result = await pool.query(createChoreQuery, [task_name, type]);
             res.locals.newChore = result.rows[0];
+
+            console.log('This is res.locals.newChore: ', res.locals.newChore);
             return next();
         } catch(err){
+            console.log('woops we shoulnt be here');
             console.error("This is the error: ", err)
             next({
                 log: 'An error occured in the roomiesController.createChore middleware.',
@@ -105,7 +113,7 @@ roomiesController.assignChore = async (req, res, next) => {
 
     try {
         const result = await pool.query(assignChoreQuery, [userId, choreId])
-        // console.log(result)
+        //!check if the chore data is actually on rows[0]
         res.locals.assignedChore = result.rows[0]
         return next();
     } catch(err){
@@ -122,6 +130,8 @@ roomiesController.assignChore = async (req, res, next) => {
 roomiesController.deleteChore = async (req, res, next) => {
     //get chore id from request params
     const {id} = req.params;
+
+    console.log(id);
 
    if (!id){
     return res.status(400).json({error: 'Chore ID is not defined.'});
@@ -165,4 +175,4 @@ roomiesController.getChores = async (req, res, next) => {
 };
 
 //! don't forget to export!!
-module.exports = roomiesController; 
+export default roomiesController;

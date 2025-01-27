@@ -1,12 +1,15 @@
-const express = require('express');
+import express from 'express';
 const apiRouter = express.Router(); //builds in router methods  
 
 
 //!import controller, middleware functions
-const roomiesController = require('../controllers/roomiesController')
+import roomiesController from '../controllers/roomiesController.js';
 
 // get all users in database
-apiRouter.get('/getUser', roomiesController.getUsers, (req, res) => res.status(200).json(res.locals.users))
+apiRouter.get('/getUser', roomiesController.getUsers, (req, res) => {
+    res.status(200).json(res.locals.users);
+
+});
 
 // create new User
 apiRouter.post('/createUser', 
@@ -39,8 +42,7 @@ apiRouter.get('/getChores',
 
 
 
-
-module.exports = apiRouter; //!check if second export overrides 
+export default apiRouter; //!check if second export overrides 
 
 //!break it up between user and chore router 
     //! either split into pages or split express.Router
