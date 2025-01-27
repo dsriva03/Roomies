@@ -1,6 +1,6 @@
 //*require postgres
-
-const {Pool} = require('pg');
+import pkg from 'pg'
+const {Pool} = pkg
 
 const PG_URI = 'postgresql://postgres.yjiqpffbceyhdzpqwhdo:jhkplfae1996@aws-0-us-west-1.pooler.supabase.com:5432/postgres'
 
@@ -29,9 +29,10 @@ queryConnection();
 
 //*export an object that contains a property called query, which is a function that returns the invocation of pool.query() after logging the query
  //needed in the controllers to access the database??
-module.exports = {
-    query: (text, params, callback) => {
-        console.log('executed query', text);
-        return pool.query(text, params, callback);
-    }
-};
+// export const query = (text, params, callback) => {
+//         console.log('executed query', text);
+//         return pool.query(text, params, callback);
+// };
+
+//*for es6 syntax, export defauly pool
+export default pool;
