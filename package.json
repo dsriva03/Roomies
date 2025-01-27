@@ -2,6 +2,7 @@
   "name": "roomies",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
     "build": "tsc -b && vite build",
@@ -10,9 +11,10 @@
     "serve": "nodemon ./server/server.js"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "pg": "^8.13.1",
-    "@tailwindcss/vite": "^4.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^4.0.0"

@@ -1,25 +1,32 @@
 //* require and import dependencies
 //require the path 
-const path = require("path");
+import path from "path";
 
 //require express
-const express = require("express");
+import express from "express";
 
 //create an app instance of express
 const app = express();
 
-//import controllers
-const roomiesController = require('./controllers/roomiesController')
+import apiRouter from './routes/api.js'; //importing RESTful routes from routes folder
 
-const apiRouter = require('./routes/api'); //importing RESTful routes from routes folder
+const PORT = 8080; //defining port as 8080
 
-const PORT = 8080; //defining port as 8080, same as Vite
+//* build the dirname manually due to es6 restrictions
+import {fileURLToPath} from 'url';
+
+//*recreate dirname for ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
 
 //* global middleware functions
 
 //cors acceptance middleware???
     //?check if need to install cors, don't think so because react and express are running on the same port 3000??
     //! install CORS, make sure its saved
+import cors from 'cors';
+
+app.use(cors());
 
 //json parser middleware
 app.use(express.json()); //deciphers text into readable json body
