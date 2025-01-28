@@ -68,7 +68,7 @@ roomiesController.getUsers = async (req, res, next) => {
         res.locals.users = result.rows
         // console.log("Row 1 is: ", result.rows[0]);
         // console.log("Row 2 is: ", result.rows[1]);
-        console.log ("All Results: ", res.locals.users);
+        // console.log ("All Results: ", res.locals.users);
         return next()
     } catch(err){
         console.error('This is the error: ', err)
