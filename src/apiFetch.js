@@ -104,20 +104,30 @@ apiFetch.createChore = async(task_name, type) => {
     }
 };
 
-//assignChore
-// apiFetch.assignChore = async(usersArr, choresArr) => {
-//     // 
-//     const
+// assignChore
+// apiFetch.assignChore = async(usersTurnIndex, chores) => {
+//     // copy choresArr for mutations
+//     const chores = [...choresArr]
 //     // define an index to keep track of next user to assign
 //     let userIndex = 0;
 //     // iterate over chores array
-//     for (let i = 0; i < choresArr.length - 1; i++) {
-//         //with each iteration
+//     for (let i = 0; i < chores.length - 1; i++) {
+//         //with each iteration make a put request to the server 
+//         //to assign the current chore to the user at index userIndex
+
+//        try {
+
+//        } catch {
+       
+       
+       
+       
+       
+       
 //         //where's your special little function huh
-    //SKIPPING??
 //         // so because this functeion just mutates the same array like the HH we did we have to assign the chorelist to new array first
 
-//     }
+//     }}
    
 //     try {
 

@@ -66,17 +66,6 @@ function ChoreList() {
                         setChoreName(event.target.value);
                     }}
                 />
-                {/* <Select onValueChange={(event)=>{setChoreType(event.target.value)}}>
-                    <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Select an option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="option1">Option 1</SelectItem>
-                        <SelectItem value="option2">Option 2</SelectItem>
-                        <SelectItem value="option3">Option 3</SelectItem>
-                        <SelectItem value="option4">Option 4</SelectItem>
-                    </SelectContent>
-                </Select> */}
                 <button 
                     className="font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-2"
                     style={{

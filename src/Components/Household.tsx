@@ -6,7 +6,7 @@ function Household() {
 
     const [roomieName, setRoomieName] = useState('');
     const [roomieEmail, setRoomieEmail] = useState('');
-    const [allRoomies, setAllRoomies] = useState([]);
+    const [_allRoomies, setAllRoomies] = useState([]);
     const [allRoomiesMap, setAllRoomiesMap] = useState([]);
 
     const getUser = async() => {
@@ -22,6 +22,7 @@ function Household() {
 
     const handleDelete = () => {
         console.log ('DELELE')
+        console.log ("This is the ID; ", this.id)
     }
  
 
