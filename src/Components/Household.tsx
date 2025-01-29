@@ -28,8 +28,11 @@ function Household() {
     getUser();
   }, [roomieUpdated]);
 
-  const submitRoomie = (givenName: string, givenEmail: string) => {
-    apiFetch.createUser(givenName, givenEmail);
+  const submitRoomie = async (givenName: string, givenEmail: string) => {
+    await apiFetch.createUser(givenName, givenEmail);
+    setRoomieName('')
+    setRoomieEmail('')
+    console.log("roomieName after submission", roomieName)
     setRoomieUpdated(prev => !prev);
   };
 
@@ -62,6 +65,7 @@ function Household() {
           onChange={(event) => {
             setRoomieName(event.target.value);
           }}
+          value={roomieName}
         />
         <input
           style={inputStyle}
@@ -70,6 +74,7 @@ function Household() {
           onChange={(event) => {
             setRoomieEmail(event.target.value);
           }}
+          value={roomieEmail}
         />
         <button
           className='font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-2'

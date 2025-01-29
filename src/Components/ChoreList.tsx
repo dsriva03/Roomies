@@ -32,6 +32,8 @@ function ChoreList() {
   const submitChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
     setChoreUpdated(prev => !prev);
+    setSelectedChoreType('daily');
+    setChoreName('');
   };
 
   const inputStyle = {
@@ -65,11 +67,12 @@ function ChoreList() {
           onChange={(event) => {
             setChoreName(event.target.value);
           }}
+          value={choreName}
         />
         <div className='relative inline-block text-left' style={inputStyle}>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className='  grow-2 px-2 py-1 font-sans text-sky-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:none'
+            className='w-full px-2 py-1 font-sans text-sky-900 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:none flex items-center justify-between'
           >
             <span>{selectedChoreType}</span>
             <svg
