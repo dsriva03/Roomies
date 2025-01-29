@@ -27,7 +27,7 @@ function ChoreWheel() {
 
 
 
-    const items = ["Joshua Clean Dishes","Austin Take Out Trash","Aditi Clean Bathroom","Jeremy Clean Floors"]
+    const items = ["josh sweep","Austin wash dog","Aditi Wash the Dishes","Jeremy take out trash",  ]
     const choreWheelContainerStyle = {
         boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),

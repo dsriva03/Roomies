@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react';
 
 function ChoreList() {
   const [choreName, setChoreName] = useState('');
-  //   const [choreType, setChoreType] = useState('');
-  const [allChores, setAllChores] = useState([]);
+  const [choreUpdated, setChoreUpdated] = useState(false);
   const [allChoresMap, setAllChoresMap] = useState([]);
-
   const [isOpen, setIsOpen] = useState(false);
   const [selectedChoreType, setSelectedChoreType] = useState('daily');
 
@@ -16,24 +14,24 @@ function ChoreList() {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
+    setChoreUpdated(prev => !prev);
   };
 
   const getChores = async () => {
     try {
       const result = await apiFetch.getChores();
       setAllChoresMap(result);
-      const choresArr = result.map((chore) => chore.task_name);
-      setAllChores(choresArr);
     } catch (err) {
       console.error('This is the ChoreList useEffect error: ', err);
     }
   };
   useEffect(() => {
     getChores();
-  }, []);
+  }, [choreUpdated]);
 
   const submitChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
+    setChoreUpdated(prev => !prev);
   };
 
   const inputStyle = {

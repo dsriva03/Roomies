@@ -4,19 +4,14 @@ import { useState, useEffect } from 'react';
 function Household() {
   const [roomieName, setRoomieName] = useState('');
   const [roomieEmail, setRoomieEmail] = useState('');
-  const [allRoomies, setAllRoomies] = useState([]);
   const [allRoomiesMap, setAllRoomiesMap] = useState([]);
+  const [roomieUpdated, setRoomieUpdated] = useState(false);
 
   const getUser = async () => {
     try {
       const result = await apiFetch.getUsers();
-      //   console.log('result users:', result);
       const usersObjArr = [...result];
       setAllRoomiesMap(usersObjArr);
-      //   console.log('allRoomiesMap: ', allRoomiesMap);
-      const userArr = result.map((user) => user.username);
-      setAllRoomies(userArr);
-      //   console.log('allRoomies: ', allRoomies);
     } catch (err) {
       console.error('This is the Household useEffect error: ', err);
     }
@@ -26,16 +21,16 @@ function Household() {
     console.log('DELELE');
     console.log('id in handleDelete in HouseHold', id);
     await apiFetch.deleteUser(id);
+    setRoomieUpdated(prev => !prev);
   };
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [roomieUpdated]);
 
   const submitRoomie = (givenName: string, givenEmail: string) => {
     apiFetch.createUser(givenName, givenEmail);
-
-    getUser();
+    setRoomieUpdated(prev => !prev);
   };
 
   const inputStyle = {
