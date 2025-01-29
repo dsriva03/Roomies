@@ -122,7 +122,7 @@ function Household() {
                 <div key={name} className="flex">
                     <input 
                         style={viewItemStyle} 
-                        className="font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-4 outline-none" 
+                        className="font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-9 outline-none" 
                         value={name} 
                         readOnly
                     />

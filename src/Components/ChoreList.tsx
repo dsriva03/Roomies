@@ -8,7 +8,13 @@ function ChoreList() {
     const [choreName, setChoreName] = useState('');
     const [choreType, setChoreType] = useState('');
     const [allChores, setAllChores] = useState([]);
-    const [allChoresMap, setAllChoresMap] = useState([])
+    const [allChoresMap, setAllChoresMap] = useState([]);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedChoreType, setSelectedChoreType] = useState('Daily');
+    
+
+    const options = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
     const handleDelete = () => {
         console.log ('DELETE CHORE');
@@ -57,17 +63,58 @@ function ChoreList() {
     return (
         <div className="p-2 m-4 h-fit" id="Household">
             <h1 className="font-display text-sky-900">Chore List</h1>
-            <div className="flex">
+            <div className="flex gap-2">
                 <input 
                     style={inputStyle} 
-                    className="font-sans text-sky-900 py-1 px-2 m-1  bg-white border-white rounded-[50px] grow-3 outline-amber-200" 
+                    className="font-sans text-sky-900 py-1 px-2 m-1  bg-white border-white rounded-[50px] grow-2 outline-amber-200" 
                     placeholder="Chore..."
                     onChange = {(event) => {
                         setChoreName(event.target.value);
                     }}
                 />
+                <div 
+                className="relative inline-block text-left"
+                style={inputStyle}
+                >
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="  grow-2 px-2 py-1 font-sans text-sky-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:none"
+                >
+                    <span>{selectedChoreType}</span>
+                    <svg
+                    className={`ml-2 h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    >
+                    <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                    />
+                    </svg>
+                </button>
+                {isOpen && (
+                    <div className="absolute  mt-1 w-48 rounded-md bg-white shadow-lg border border-gray-300">
+                    <div className="py-1">
+                        {options.map((option) => (
+                        <button
+                            key={option}
+                            onClick={() => {
+                            setSelectedChoreType(option);
+                            setIsOpen(false);
+                            }}
+                            className="block w-full text-left font-sans text-sky-900 px-2 py-1 text-sm bg-white hover:bg-fuchsia-400 hover:text-white focus:bg-gray-100 focus:outline-none"
+                        >
+                            {option}
+                        </button>
+                        ))}
+                    </div>
+                    </div>
+                )}
+                    </div>
                 <button 
-                    className="font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-2"
+                    className="font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-1"
                     style={{
                         boxShadow: `
                         0 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -109,7 +156,7 @@ function ChoreList() {
                 <div key={element['id']} className="flex">
                     <input 
                         style={viewItemStyle} 
-                        className="font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-4 outline-none" 
+                        className="font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-9 outline-none" 
                         value={element['task_name']} 
                         readOnly
                     />
