@@ -2,10 +2,10 @@ import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
 function Household() {
-  const [roomieName, setRoomieName] = useState('');
-  const [roomieEmail, setRoomieEmail] = useState('');
-  const [allRoomiesMap, setAllRoomiesMap] = useState([]);
-  const [roomieUpdated, setRoomieUpdated] = useState(false);
+  const [roomieName, setRoomieName] = useState<string>('');
+  const [roomieEmail, setRoomieEmail] = useState<string>('');
+  const [allRoomiesMap, setAllRoomiesMap] = useState<object[]>([]);
+  const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
 
   const getUser = async () => {
     try {
@@ -17,11 +17,11 @@ function Household() {
     }
   };
 
-  const handleDelete = async (id) => {
-    console.log('DELELE');
+  const handleDelete = async (id: number) => {
+    console.log('DELETE');
     console.log('id in handleDelete in HouseHold', id);
     await apiFetch.deleteUser(id);
-    setRoomieUpdated(prev => !prev);
+    setRoomieUpdated((prev) => !prev);
   };
 
   useEffect(() => {
@@ -30,10 +30,10 @@ function Household() {
 
   const submitRoomie = async (givenName: string, givenEmail: string) => {
     await apiFetch.createUser(givenName, givenEmail);
-    setRoomieName('')
-    setRoomieEmail('')
-    console.log("roomieName after submission", roomieName)
-    setRoomieUpdated(prev => !prev);
+    setRoomieName('');
+    setRoomieEmail('');
+    console.log('roomieName after submission', roomieName);
+    setRoomieUpdated((prev) => !prev);
   };
 
   const inputStyle = {
