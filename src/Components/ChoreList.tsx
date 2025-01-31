@@ -2,11 +2,11 @@ import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
 function ChoreList() {
-  const [choreName, setChoreName] = useState('');
-  const [choreUpdated, setChoreUpdated] = useState(false);
-  const [allChoresMap, setAllChoresMap] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedChoreType, setSelectedChoreType] = useState('daily');
+  const [choreName, setChoreName] = useState<string>('');
+  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
+  const [allChoresMap, setAllChoresMap] = useState<object[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
 
   const options = ['daily', 'weekly', 'monthly', 'one-time'];
 
@@ -14,7 +14,7 @@ function ChoreList() {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
-    setChoreUpdated(prev => !prev);
+    setChoreUpdated((prev) => !prev);
   };
 
   const getChores = async () => {
@@ -31,7 +31,7 @@ function ChoreList() {
 
   const submitChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
-    setChoreUpdated(prev => !prev);
+    setChoreUpdated((prev) => !prev);
     setSelectedChoreType('daily');
     setChoreName('');
   };
