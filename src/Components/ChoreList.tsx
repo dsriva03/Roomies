@@ -1,16 +1,21 @@
 import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
+interface Chore {
+  id: string;
+  task_name: string;
+}
+
 function ChoreList() {
   const [choreName, setChoreName] = useState<string>('');
   const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
-  const [allChoresMap, setAllChoresMap] = useState<object[]>([]);
+  const [allChoresMap, setAllChoresMap] = useState<Chore[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
 
   const options = ['daily', 'weekly', 'monthly', 'one-time'];
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
@@ -151,12 +156,12 @@ function ChoreList() {
         </button>
       </div>
       <div className='m-6'></div>
-      {allChoresMap.map((element) => (
-        <div key={element['id']} className='flex'>
+      {allChoresMap.map((chore) => (
+        <div key={chore.id} className='flex'>
           <input
             style={viewItemStyle}
             className='font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-9 outline-none'
-            value={element['task_name']}
+            value={chore.task_name}
             readOnly
           />
           <button
@@ -194,7 +199,7 @@ function ChoreList() {
               e.currentTarget.style.transform = 'none';
             }}
             onClick={() => {
-              handleDelete(element['id']);
+              handleDelete(chore.id);
             }}
           >
             <svg
