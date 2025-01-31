@@ -2,19 +2,27 @@ import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
 interface Chore {
-  id: string;
+  id: string; // ?  I think this is because supabase returns the number in the form of a string???
   task_name: string;
 }
 
 function ChoreList() {
-  const [choreName, setChoreName] = useState<string>('');
-  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
-  const [allChoresMap, setAllChoresMap] = useState<Chore[]>([]);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
+  const [choreName, setChoreName] = useState<string>(''); /// current chore name (from input field) to pass into createChore invocation
+  const [selectedChoreType, setSelectedChoreType] = useState<string>('daily'); /// current chore type (from input field) to pass into createChore invocation
+  const [allChoresMap, setAllChoresMap] = useState<Chore[]>([]); /// array of all chore objects in database
+  const [choreUpdated, setChoreUpdated] = useState<boolean>(false); /// a boolean used as a dependency for useEffect to trigger rerender when chore is created
+  const [isOpen, setIsOpen] = useState<boolean>(false); /// used to manage visibility of the dropdown of chore list
+  const options = ['daily', 'weekly', 'monthly', 'one-time']; /// chore type array for dropdown menu
 
-  const options = ['daily', 'weekly', 'monthly', 'one-time'];
+  // ; HANDLER TO CREATE CHORE
+  const createChore = async (givenTitle: string, givenType: string) => {
+    await apiFetch.createChore(givenTitle, givenType);
+    setChoreUpdated((prev) => !prev);
+    setSelectedChoreType('daily');
+    setChoreName('');
+  };
 
+  // ; HANDLER TO DELETE CHORE
   const handleDelete = async (id: string) => {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
@@ -22,6 +30,7 @@ function ChoreList() {
     setChoreUpdated((prev) => !prev);
   };
 
+  // ; FUNCTION TO GET CHORES (for displaying in chorelist)
   const getChores = async () => {
     try {
       const result = await apiFetch.getChores();
@@ -30,17 +39,13 @@ function ChoreList() {
       console.error('This is the ChoreList useEffect error: ', err);
     }
   };
+
+  // ; USEEFFECT FOR RERENDER IN CHORE CREATION AND DELETION
   useEffect(() => {
     getChores();
   }, [choreUpdated]);
 
-  const submitChore = async (givenTitle: string, givenType: string) => {
-    await apiFetch.createChore(givenTitle, givenType);
-    setChoreUpdated((prev) => !prev);
-    setSelectedChoreType('daily');
-    setChoreName('');
-  };
-
+  // ; STYLING PRESETS FOR SHADOWS
   const inputStyle = {
     boxShadow: `
         0 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -59,11 +64,9 @@ function ChoreList() {
         `,
   };
 
-  // const chores = ["Take Out Trash", "Clean Dishes", "Clean Bathroom", "Clean Floors"];
-
   return (
     <div className='p-2 m-4 h-fit' id='Household'>
-      <h1 className='font-display text-sky-900'>Chore List</h1>
+      <h1 className='font-display text-sky-900'>Chores</h1>
       <div className='flex gap-2'>
         <input
           style={inputStyle}
@@ -149,7 +152,7 @@ function ChoreList() {
             e.currentTarget.style.transform = 'none';
           }}
           onClick={() => {
-            submitChore(choreName, selectedChoreType);
+            createChore(choreName, selectedChoreType);
           }}
         >
           Add Chore
