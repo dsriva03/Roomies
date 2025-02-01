@@ -25,24 +25,27 @@ function Household() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    console.log('DELETE');
-    console.log('id in handleDelete in HouseHold', id);
-    await apiFetch.deleteUser(id);
-    setRoomieUpdated((prev) => !prev);
-  };
-
-  useEffect(() => {
-    getUser();
-  }, [roomieUpdated]);
-
-  const submitRoomie = async (givenName: string, givenEmail: string) => {
+  // ; HANDLER TO CREATE ROOMIE
+  const createRoomie = async (givenName: string, givenEmail: string) => {
     await apiFetch.createUser(givenName, givenEmail);
     setRoomieName('');
     setRoomieEmail('');
     console.log('roomieName after submission', roomieName);
     setRoomieUpdated((prev) => !prev);
   };
+
+  // ; DELETE ROOMIE
+  const deleteRoomie = async (id: string) => {
+    console.log('DELETE');
+    console.log('id in handleDelete in HouseHold', id);
+    await apiFetch.deleteUser(id);
+    setRoomieUpdated((prev) => !prev);
+  };
+
+  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+  useEffect(() => {
+    getUser();
+  }, [roomieUpdated]);
 
   const inputStyle = {
     boxShadow: `
@@ -64,7 +67,7 @@ function Household() {
 
   return (
     <div className='p-2 m-4 h-fit' id='Household'>
-      <h1 className='font-display text-sky-900'>Your Household</h1>
+      <h1 className='font-display text-sky-900'>Our Roomies</h1>
       <div className='flex'>
         <input
           style={inputStyle}
@@ -119,7 +122,7 @@ function Household() {
             e.currentTarget.style.transform = 'none';
           }}
           onClick={() => {
-            submitRoomie(roomieName, roomieEmail);
+            createRoomie(roomieName, roomieEmail);
           }}
         >
           Submit
@@ -128,11 +131,11 @@ function Household() {
 
       <div className='m-6'></div>
       {allRoomiesMap.map((user) => (
-        <div key={user['id']} className='flex'>
+        <div key={user.id} className='flex'>
           <input
             style={viewItemStyle}
             className='font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-9 outline-none'
-            value={user['username']}
+            value={user.username}
             readOnly
           />
           <button
@@ -170,7 +173,7 @@ function Household() {
               e.currentTarget.style.transform = 'none';
             }}
             onClick={() => {
-              handleDelete(user['id']);
+              deleteRoomie(user.id);
             }}
           >
             <svg

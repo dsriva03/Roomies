@@ -1,5 +1,6 @@
 //*require postgres
 import dotenv from 'dotenv';
+dotenv.config();
 import pkg from 'pg';
 const { Pool } = pkg;
 
@@ -8,6 +9,9 @@ const PG_URI = process.env.DATABASE_URL;
 
 const pool = new Pool({
   connectionString: PG_URI,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 //testing connection

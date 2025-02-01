@@ -28,6 +28,7 @@ function ChoreList() {
     setChoreUpdated((prev) => !prev);
   };
 
+  // ; FUNCTION TO GET CHORES (for displaying in chorelist)
   const getChores = async () => {
     try {
       const result = await apiFetch.getChores();
@@ -36,6 +37,8 @@ function ChoreList() {
       console.error('This is the ChoreList useEffect error: ', err);
     }
   };
+
+  // ; USEEFFECT FOR RERENDER IN CHORE CREATION AND DELETION
   useEffect(() => {
     getChores();
   }, [choreUpdated]);
@@ -69,11 +72,9 @@ function ChoreList() {
         `,
   };
 
-  // const chores = ["Take Out Trash", "Clean Dishes", "Clean Bathroom", "Clean Floors"];
-
   return (
     <div className='p-2 m-4 h-fit' id='Household'>
-      <h1 className='font-display text-sky-900'>Chore List</h1>
+      <h1 className='font-display text-sky-900'>Chores</h1>
       <div className='flex gap-2'>
         <input
           style={inputStyle}
@@ -159,19 +160,19 @@ function ChoreList() {
             e.currentTarget.style.transform = 'none';
           }}
           onClick={() => {
-            submitChore(choreName, selectedChoreType);
+            createChore(choreName, selectedChoreType);
           }}
         >
           Add Chore
         </button>
       </div>
       <div className='m-6'></div>
-      {allChoresMap.map((element) => (
-        <div key={element['id']} className='flex'>
+      {allChoresMap.map((chore) => (
+        <div key={chore.id} className='flex'>
           <input
             style={viewItemStyle}
             className='font-sans text-sky-900 py-1 px-2 m-1 shadow-2xl bg-white border-white rounded-[50px] grow-9 outline-none'
-            value={element['task_name']}
+            value={chore.task_name}
             readOnly
           />
           <button
@@ -209,7 +210,7 @@ function ChoreList() {
               e.currentTarget.style.transform = 'none';
             }}
             onClick={() => {
-              handleDelete(element['id']);
+              handleDelete(chore.id);
             }}
           >
             <svg
