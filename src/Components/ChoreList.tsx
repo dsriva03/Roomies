@@ -43,10 +43,6 @@ function ChoreList() {
     getChores();
   }, [choreUpdated]);
 
-  useEffect(()=>{
-    console.log('Chores',allChoresMap);
-  })
-
   const submitChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
     setChoreUpdated((prev) => !prev);
