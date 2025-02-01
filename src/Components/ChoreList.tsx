@@ -1,29 +1,27 @@
 import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
-interface Chore {
-  id: string; // ?  I think this is because supabase returns the number in the form of a string???
-  task_name: string;
+//Interface for chores map typing
+interface Chores {
+  id: number,
+  task_name: string,
+  type: string,
+  assigned_to: string|null,
+  status: string,
+  due_date: Date | null,
+  created_at: Date | null
 }
 
 function ChoreList() {
-  const [choreName, setChoreName] = useState<string>(''); /// current chore name (from input field) to pass into createChore invocation
-  const [selectedChoreType, setSelectedChoreType] = useState<string>('daily'); /// current chore type (from input field) to pass into createChore invocation
-  const [allChoresMap, setAllChoresMap] = useState<Chore[]>([]); /// array of all chore objects in database
-  const [choreUpdated, setChoreUpdated] = useState<boolean>(false); /// a boolean used as a dependency for useEffect to trigger rerender when chore is created
-  const [isOpen, setIsOpen] = useState<boolean>(false); /// used to manage visibility of the dropdown of chore list
-  const options = ['daily', 'weekly', 'monthly', 'one-time']; /// chore type array for dropdown menu
+  const [choreName, setChoreName] = useState<string>('');
+  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
+  const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
 
-  // ; HANDLER TO CREATE CHORE
-  const createChore = async (givenTitle: string, givenType: string) => {
-    await apiFetch.createChore(givenTitle, givenType);
-    setChoreUpdated((prev) => !prev);
-    setSelectedChoreType('daily');
-    setChoreName('');
-  };
+  const options = ['daily', 'weekly', 'monthly', 'one-time'];
 
-  // ; HANDLER TO DELETE CHORE
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
@@ -45,7 +43,17 @@ function ChoreList() {
     getChores();
   }, [choreUpdated]);
 
-  // ; STYLING PRESETS FOR SHADOWS
+  useEffect(()=>{
+    console.log('Chores',allChoresMap);
+  })
+
+  const submitChore = async (givenTitle: string, givenType: string) => {
+    await apiFetch.createChore(givenTitle, givenType);
+    setChoreUpdated((prev) => !prev);
+    setSelectedChoreType('daily');
+    setChoreName('');
+  };
+
   const inputStyle = {
     boxShadow: `
         0 10px 25px -3px rgba(0, 0, 0, 0.3),

@@ -1,20 +1,20 @@
 import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
-interface User {
-  id: string; // ? I think this is because supabase returns the number in the form of a string???
-  username: string;
-  task_name: string;
+//Interface for Roomies Map typing
+interface Roomies {
+  id: number,
+  username: string,
+  email: string,
+  created_at: Date
 }
 
-// ; HOUSEHOLD COMPONENT
 function Household() {
-  const [roomieName, setRoomieName] = useState<string>(''); /// current username (from input field) to pass into createRoomie invocation
-  const [roomieEmail, setRoomieEmail] = useState<string>(''); /// current email (from input field) to pass into createRoomie invocation
-  const [allRoomiesMap, setAllRoomiesMap] = useState<User[]>([]); /// array of all user objects in database
-  const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false); /// a boolean used as a dependency for useEffect to trigger rerender when user is created
+  const [roomieName, setRoomieName] = useState<string>('');
+  const [roomieEmail, setRoomieEmail] = useState<string>('');
+  const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
+  const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
 
-  // ; GET USERS FROM DATABASE
   const getUser = async () => {
     try {
       const result = await apiFetch.getUsers();
