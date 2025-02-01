@@ -1,16 +1,27 @@
 import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
+//Interface for chores map typing
+interface Chores {
+  id: number,
+  task_name: string,
+  type: string,
+  assigned_to: string|null,
+  status: string,
+  due_date: Date | null,
+  created_at: Date | null
+}
+
 function ChoreList() {
   const [choreName, setChoreName] = useState<string>('');
   const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
-  const [allChoresMap, setAllChoresMap] = useState<object[]>([]);
+  const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
 
   const options = ['daily', 'weekly', 'monthly', 'one-time'];
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: number) => {
     console.log('DELETE CHORE');
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
@@ -28,6 +39,10 @@ function ChoreList() {
   useEffect(() => {
     getChores();
   }, [choreUpdated]);
+
+  useEffect(()=>{
+    console.log('Chores',allChoresMap);
+  })
 
   const submitChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);

@@ -1,10 +1,18 @@
 import apiFetch from '../apiFetch.js';
 import { useState, useEffect } from 'react';
 
+//Interface for Roomies Map typing
+interface Roomies {
+  id: number,
+  username: string,
+  email: string,
+  created_at: Date
+}
+
 function Household() {
   const [roomieName, setRoomieName] = useState<string>('');
   const [roomieEmail, setRoomieEmail] = useState<string>('');
-  const [allRoomiesMap, setAllRoomiesMap] = useState<object[]>([]);
+  const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
   const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
 
   const getUser = async () => {
