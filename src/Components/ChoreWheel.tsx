@@ -1,26 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import apiFetch from '../apiFetch.js';
 
-interface Roomies {
-  id: number,
-  username: string,
-  email: string,
-  created_at: Date
-}
-
 interface Chores {
-  id: number,
-  task_name: string,
-  type: string,
-  assigned_to: string|null,
-  status: string,
-  due_date: Date | null,
-  created_at: Date | null
+  id: number;
+  task_name: string;
+  type: string;
+  assigned_to: string | null;
+  status: string;
+  due_date: Date | null;
+  created_at: Date | null;
 }
 
 //; CHORE WHEEL COMPONENT
 function ChoreWheel() {
-
   const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
   const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
   const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
@@ -29,7 +21,7 @@ function ChoreWheel() {
   const containerRef = useRef(null);
   const [rotation, setRotation] = useState<number>(0);
 
-// get chores
+  // get chores
   const getChores = async () => {
     try {
       const result = await apiFetch.getChores();
@@ -40,7 +32,7 @@ function ChoreWheel() {
   };
 
   // get users
- const getUser = async () => {
+  const getUser = async () => {
     try {
       const result = await apiFetch.getUsers();
       const usersObjArr = [...result];
@@ -55,15 +47,10 @@ function ChoreWheel() {
     getChores();
   }, [choreUpdated]);
 
-    // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-    useEffect(() => {
-      getUser();
-    }, [roomieUpdated]);
-
-  useEffect(()=>{
-    console.log('Chores',allChoresMap);
-  })
-
+  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+  useEffect(() => {
+    getUser();
+  }, [roomieUpdated]);
 
   //; CHORE WHEEL ANIMATION
   useEffect(() => {
@@ -92,18 +79,14 @@ function ChoreWheel() {
   // });
 
   /**
-   * 
+   *
    */
 
   // const items = [
-    
+
   // ]
 
-  const items = [
-    'josh walk the dog',
-    'Austin wash dog',
-    `${allRoomiesMap[0].username} ${allChoresMap[0].task_name}`
-  ];
+  const items = ['josh walk the dog', 'Austin wash dog', 'Aditi sweep floors'];
   const choreWheelContainerStyle = {
     boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -143,7 +126,7 @@ function ChoreWheel() {
                   key={i}
                   className='absolute w-full h-full'
                   style={{
-                    borderRadius: "50%",
+                    borderRadius: '50%',
                     clipPath: `polygon(50% 50%, ${
                       50 +
                       100 * Math.cos((i * (360 / items.length) * Math.PI) / 180)
