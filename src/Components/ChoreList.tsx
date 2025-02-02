@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 
 //Interface for chores map typing
 interface Chores {
-  id: number,
-  task_name: string,
-  type: string,
-  assigned_to: string|null,
-  status: string,
-  due_date: Date | null,
-  created_at: Date | null
+  id: number;
+  task_name: string;
+  type: string;
+  assigned_to: string | null;
+  status: string;
+  due_date: Date | null;
+  created_at: Date | null;
 }
 
 function ChoreList() {
@@ -43,12 +43,27 @@ function ChoreList() {
     getChores();
   }, [choreUpdated]);
 
-  const submitChore = async (givenTitle: string, givenType: string) => {
+  const createChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
     setChoreUpdated((prev) => !prev);
     setSelectedChoreType('daily');
     setChoreName('');
   };
+
+  //; TEST FOR ASSIGN CHORE
+  const assignmentArr1 = [
+    { choreId: 8, userId: 4 },
+    { choreId: 9, userId: 2 },
+    { choreId: 10, userId: 4 },
+    { choreId: 11, userId: 2 },
+    { choreId: 12, userId: 4 },
+  ];
+
+  const testAssign = async () => {
+    const response = await apiFetch.assignChore(assignmentArr1);
+    console.log(response);
+  };
+  testAssign();
 
   const inputStyle = {
     boxShadow: `
