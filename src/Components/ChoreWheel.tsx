@@ -173,86 +173,105 @@ function ChoreWheel() {
   };
   const choreWheelStyle = {
     transform: `rotate(${rotation}deg)`,
-    transition: 'transform 0s linear',
+    transition: "transform 0s linear",
   };
+
+  // get chores
+  const getChores = async () => {
+    try {
+      const result = await apiFetch.getChores();
+      setAllChoresMap(result);
+    } catch (err) {
+      console.error("This is the ChoreList useEffect error: ", err);
+    }
+  };
+
+  // get users
+  const getUser = async () => {
+    try {
+      const result = await apiFetch.getUsers();
+      const usersObjArr = [...result];
+      setAllRoomiesMap(usersObjArr);
+    } catch (err) {
+      console.error("This is the Household useEffect error: ", err);
+    }
+  };
+
+  useEffect(() => {
+    getChores();
+  }, []);
+
+  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("Chores", allChoresMap);
+    console.log("users", allRoomiesMap);
+  });
+
+  // Calculate the degrees per item for equal slices.
+  const degreePerItem = 360 / items.length;
+
+  // Build the conic-gradient string dynamically.
+  const backgroundString = `conic-gradient(
+    ${items
+      .map((_, i) => {
+        const start = i * degreePerItem;
+        const end = (i + 1) * degreePerItem;
+        // Each slice gets a unique color. Adjust the hue multiplier as needed.
+        return `hsl(${i * 60}, 70%, 60%) ${start}deg ${end}deg`;
+      })
+      .join(", ")}
+  )`;
 
   return (
     <>
       <div
-        className='p-2 m-4 h-8/10 w-1/2 border-[#aa9e97] rounded-[50px]
-             border-4 bg-[#f8ecd1]'
-        id='ChoreWheel'
+        className="p-2 m-4 h-8/10 w-1/2 border-white rounded-[50px]
+             border-5"
+        id="ChoreWheel"
       >
-        <h1 className='text-2xl font-display font-semibold text-sky-900'>
+        <h1 className="text-2xl font-display font-semibold text-sky-900">
           Chore Wheel
         </h1>
-        <div id='wheelContainer' className='flex justify-center m-10'>
+        <div id="wheelContainer" className="flex justify-center m-10">
           <div
-            id='wheel'
-            className='flex-none rounded-full'
+            id="wheel"
+            className="flex-none rounded-full"
             style={choreWheelContainerStyle}
           >
             <div
               ref={containerRef}
-              className='relative w-120 h-120 rounded-full overflow-hidden'
-              style={choreWheelStyle}
+              className="relative w-120 h-120 rounded-full overflow-hidden"
+              style={{
+                // Use the conic-gradient background for the pie slices.
+                background: backgroundString,
+              }}
             >
-              {Array.from(items).map((_, i) => (
-                <div
+              {items.map((item, i) => (
+                <span
                   key={i}
-                  className='absolute w-full h-full'
+                  className="absolute text-white font-bold"
                   style={{
-                    borderRadius: '50%',
-                    clipPath: `polygon(50% 50%, ${
-                      50 +
-                      100 * Math.cos((i * (360 / items.length) * Math.PI) / 180)
-                    }% ${
-                      50 +
-                      100 * Math.sin((i * (360 / items.length) * Math.PI) / 180)
-                    }%, ${
-                      50 +
-                      100 *
-                        Math.cos(
-                          ((i + 1) * (360 / items.length) * Math.PI) / 180
-                        )
-                    }% ${
-                      50 +
-                      100 *
-                        Math.sin(
-                          ((i + 1) * (360 / items.length) * Math.PI) / 180
-                        )
-                    }%)`,
-                    backgroundColor: `hsl(${i * 60}, 70%, 60%)`,
+                    // Position the label in the middle of each slice.
+                  top: `calc(50% + ${30 *
+                    Math.sin(((i + 0.5) * degreePerItem * Math.PI) / 180)}%)`,
+                  left: `calc(50% + ${30 *
+                    Math.cos(((i + 0.5) * degreePerItem * Math.PI) / 180)}%)`,
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "left",
+                  width: "50px",
                   }}
                 >
-                  <span
-                    className='absolute text-white font-bold'
-                    style={{
-                      top: `calc(50% + ${
-                        30 *
-                        Math.sin(
-                          ((i + 0.5) * (360 / items.length) * Math.PI) / 180
-                        )
-                      }%)`,
-                      left: `calc(50% + ${
-                        30 *
-                        Math.cos(
-                          ((i + 0.5) * (360 / items.length) * Math.PI) / 180
-                        )
-                      }%)`,
-                      transform: 'translate(-50%, -50%)',
-                      textAlign: 'center',
-                      width: '50px',
-                    }}
-                  >
-                    {items[i]}
+                    {item}
                   </span>
-                </div>
               ))}
+                </div>
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }
