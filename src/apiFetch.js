@@ -90,12 +90,42 @@ apiFetch.createChore = async (task_name, type) => {
     console.log('This is the new chore (data): ', data);
     return data;
   } catch (err) {
-    console.error('This is the error, ', err);
+    console.error(
+      'An error occured in apiFetch.createChore fetch request, ',
+      err
+    );
   }
 };
 
 // assignChore
-// apiFetch.assignChore = async(usersTurnIndex, chores) => {
+apiFetch.assignChore = async (assignmentArr) => {
+  /// we will recieve an array of assignments objects
+  await Promise.all(
+    assignmentArr.map(async (assignment) => {
+      const userId = assignment.userId;
+      const choreId = assignment.choreId;
+      try {
+        const response = await fetch('http://localhost:8080/api/assignChore', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            choreId,
+          }),
+        });
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.error(
+          'An error occured in apiFetch.assignChore fetch request, ',
+          err
+        );
+      }
+    })
+  );
+};
 //     // copy choresArr for mutations
 //     const chores = [...choresArr]
 //     // define an index to keep track of next user to assign

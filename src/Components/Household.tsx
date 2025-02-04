@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 
 //Interface for Roomies Map typing
 interface Roomies {
-  id: number,
-  username: string,
-  email: string,
-  created_at: Date
+  id: number;
+  username: string;
+  email: string;
+  created_at: Date;
 }
 
 function Household() {
