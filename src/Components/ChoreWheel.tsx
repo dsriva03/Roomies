@@ -73,16 +73,7 @@ function ChoreWheel() {
     const roomiesArr = allRoomiesMap.map((users) => {
       return [users.id, users.username];
     });
-    // console.log('roomiesArr',roomiesArr)
-    //function to create a new combined array
-    /**
-     * Expected output shape:
-     * roomieWTask = {
-     * id: number,
-     * username: string,
-     * chores: [{choreId: choreName}, ...]
-     * }
-     */
+
     function combineData(user, chores) {
       //init output arr
       const output = [];
@@ -149,19 +140,6 @@ function ChoreWheel() {
     requestAnimationFrame(animate);
   }, []);
 
-  // useEffect(()=>{
-  //   console.log('chores',allChoresMap[0].task_name);
-  //   console.log('roomies',allRoomiesMap[0].username);
-  // }, [allChoresMap, allRoomiesMap]);
-
-  /**
-   *
-   */
-
-  // const items = [
-
-  // ]
-
   const items = ['josh walk the dog', 'Austin wash dog', 'Aditi sweep floors'];
   const choreWheelContainerStyle = {
     boxShadow: `
@@ -176,40 +154,6 @@ function ChoreWheel() {
     transition: "transform 0s linear",
   };
 
-  // get chores
-  const getChores = async () => {
-    try {
-      const result = await apiFetch.getChores();
-      setAllChoresMap(result);
-    } catch (err) {
-      console.error("This is the ChoreList useEffect error: ", err);
-    }
-  };
-
-  // get users
-  const getUser = async () => {
-    try {
-      const result = await apiFetch.getUsers();
-      const usersObjArr = [...result];
-      setAllRoomiesMap(usersObjArr);
-    } catch (err) {
-      console.error("This is the Household useEffect error: ", err);
-    }
-  };
-
-  useEffect(() => {
-    getChores();
-  }, []);
-
-  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    console.log("Chores", allChoresMap);
-    console.log("users", allRoomiesMap);
-  });
 
   // Calculate the degrees per item for equal slices.
   const degreePerItem = 360 / items.length;
@@ -236,6 +180,8 @@ function ChoreWheel() {
         <h1 className="text-2xl font-display font-semibold text-sky-900">
           Chore Wheel
         </h1>
+        <div className="flex justify-start"><button className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-lg font-display font-semibold rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-300"
+        type='submit' onClick={() => {shuffle(allChoresMap)}}>Shuffle Chores</button></div>
         <div id="wheelContainer" className="flex justify-center m-10">
           <div
             id="wheel"
