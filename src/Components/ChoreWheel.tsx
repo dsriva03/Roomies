@@ -47,10 +47,74 @@ function ChoreWheel() {
     getChores();
   }, [choreUpdated]);
 
-  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-  useEffect(() => {
-    getUser();
-  }, [roomieUpdated]);
+    // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+    useEffect(() => {
+      getUser();
+    }, [roomieUpdated]);
+
+    //split available chores to available users and assign
+  useEffect(()=>{
+    console.log('Chores',allChoresMap);
+    const choresArr = allChoresMap.map((chores)=>{
+      return [chores.id, chores.task_name]
+    });
+    const roomiesArr = allRoomiesMap.map((users)=>{
+      return [users.id, users.username]
+    });
+    //function to create a new combined array
+    /**
+     * Expected output shape: [[id, username, taskId, taskName]...]
+     * or roomieWTask = {
+     * id: number,
+     * username: string,
+     * task: taskId,
+     * taskName: taskName
+     * }
+     */
+    function combineData(a1:(number|string)[], a2:(number|string)[]) {
+      //init output arr
+      const output = []
+      //while a2 (chores) has a length greater than 0 create a user obj with the needed properties
+      while (a2.length > 0){
+        // if we have more chores than users...
+        if(a1.length === 0){
+          //iterate over available users in output from the beginning of the arr
+          for(let i = 0; i < output.length; i++){
+            //pop a chore arr from chores
+            const current = a2.pop();
+            //get the user at the current index
+            //current shape is user {id: id, username: username, taskId: [id], taskName: [taskName]}
+            //push the extra task id in the task arr and taskname in the taskname arr
+            output[i].taskId.push(current[0])
+            output[i].taskName.push(current[1])
+            if((a2.length > 0) || (i>=output.length)){
+              i=0;
+            }
+          }
+          break;
+        }
+        //pop a user arr from roomies. it should contain [id, username]
+        const current1 = a1.pop()
+        //pop a chore from chores. it should contain [id, taskName]
+        const current2 = a2.pop()
+        //create a user obj with needed keys and fill with popped array values
+        const user = {
+          id: current1[0],
+          username: current1[1],
+          taskId: [current2[0]],
+          taskName: [current2[1]]
+        }
+        //push the new obj to the output arr
+        output.push(user);
+      }
+      return output;
+    }
+
+    console.log('mapped chores',choresArr);
+    console.log('mapped users',roomiesArr);
+    console.log('combined', combineData(roomiesArr, choresArr));
+  },[allChoresMap, allRoomiesMap]);
+
 
   //; CHORE WHEEL ANIMATION
   useEffect(() => {
@@ -76,7 +140,7 @@ function ChoreWheel() {
   // useEffect(()=>{
   //   console.log('chores',allChoresMap[0].task_name);
   //   console.log('roomies',allRoomiesMap[0].username);
-  // });
+  // }, [allChoresMap, allRoomiesMap]);
 
   /**
    *
