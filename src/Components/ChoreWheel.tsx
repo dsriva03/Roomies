@@ -11,6 +11,13 @@ interface Chores {
   created_at: Date | null;
 }
 
+interface Roomies {
+  id: number;
+  username: string;
+  email: string;
+  created_at: Date;
+}
+
 //; CHORE WHEEL COMPONENT
 function ChoreWheel() {
   const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
@@ -54,64 +61,70 @@ function ChoreWheel() {
 
     //split available chores to available users and assign
   useEffect(()=>{
-    console.log('Chores',allChoresMap);
+    // console.log('mapped users',allRoomiesMap);
+    // console.log('mapped chores',allChoresMap);
     const choresArr = allChoresMap.map((chores)=>{
-      return [chores.id, chores.task_name]
+      // console.log('chores idk',chores);
+      const choreObj = {}
+      choreObj[chores['id']] = chores.task_name
+      return choreObj
     });
+    // console.log('choresArr',choresArr)
     const roomiesArr = allRoomiesMap.map((users)=>{
       return [users.id, users.username]
     });
+    // console.log('roomiesArr',roomiesArr)
     //function to create a new combined array
     /**
-     * Expected output shape: [[id, username, taskId, taskName]...]
-     * or roomieWTask = {
+     * Expected output shape:
+     * roomieWTask = {
      * id: number,
      * username: string,
-     * task: taskId,
-     * taskName: taskName
+     * chores: [{choreId: choreName}, ...]
      * }
      */
-    function combineData(a1:(number|string)[], a2:(number|string)[]) {
+    function combineData(user, chores) {
       //init output arr
       const output = []
       //while a2 (chores) has a length greater than 0 create a user obj with the needed properties
-      while (a2.length > 0){
+      while (chores.length > 0){
         // if we have more chores than users...
-        if(a1.length === 0){
+        if(user.length === 0){
           //iterate over available users in output from the beginning of the arr
           for(let i = 0; i < output.length; i++){
             //pop a chore arr from chores
-            const current = a2.pop();
+            const current = chores.pop();
             //get the user at the current index
             //current shape is user {id: id, username: username, taskId: [id], taskName: [taskName]}
             //push the extra task id in the task arr and taskname in the taskname arr
-            output[i].taskId.push(current[0])
-            output[i].taskName.push(current[1])
-            if((a2.length > 0) || (i>=output.length)){
-              i=0;
+            output[i].chores.push(current)
+            // console.log(`i is ${i} and output length is ${output.length}. Reset i at ${output.length - 1} if chores length is still above 0. chores length is: ${chores.length}`);
+            // console.log(`assign ${current} to ${output[i].username}`)
+            if((chores.length > 0) && (i >= output.length - 1)){
+              //assign to -1 so that when the loop resets it will go back to 0
+              i=-1;
+              // console.log(`resetting i to ${i} now`)
+            }else if(chores.length === 0){
+              break;
             }
           }
           break;
         }
         //pop a user arr from roomies. it should contain [id, username]
-        const current1 = a1.pop()
+        const current1 = user.pop()
         //pop a chore from chores. it should contain [id, taskName]
-        const current2 = a2.pop()
+        const current2 = chores.pop()
         //create a user obj with needed keys and fill with popped array values
-        const user = {
+        const userObj = {
           id: current1[0],
           username: current1[1],
-          taskId: [current2[0]],
-          taskName: [current2[1]]
+          chores: [current2]
         }
         //push the new obj to the output arr
-        output.push(user);
+        output.push(userObj);
       }
       return output;
     }
-
-    console.log('mapped chores',choresArr);
-    console.log('mapped users',roomiesArr);
     console.log('combined', combineData(roomiesArr, choresArr));
   },[allChoresMap, allRoomiesMap]);
 
