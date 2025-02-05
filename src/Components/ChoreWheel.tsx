@@ -182,20 +182,30 @@ function ChoreWheel() {
     const chores = shuffledArr[1];
     const combined = combineData(users, chores);
     console.log('combined: ', combined);
-    setShuffledAssignment(combined);
 
     try {
       // const = shuffledAssignmentCopy =
       // const copyArr = [...shuffledAssignment];
 
       const response = await apiFetch.assignChore(combined);
-      const data = await response.json();
 
-      console.log(data);
+      if (response) {
+        console.log('AssignChore Response:', response);
+      } else {
+        console.warn('No response received from apiFetch.assignChore');
+      }
+      // const data = await response.json();
+
+      setShuffledAssignment(combined);
     } catch (err) {
       console.error('Error in apiFetch.assignChore(shuffledAssignment)', err);
     }
   };
+
+  useEffect(() => {
+    getChores();
+    getUser();
+  }, [shuffledAssignment]);
 
   // useEffect(() => {
   //   const shuffledChores = shuffle(allChoresMap);
@@ -310,7 +320,41 @@ function ChoreWheel() {
     },
   ];
   // const items = ['joshy', 'Amrita', 'Adeets'];
+  //; CUSTOM COLORS ARRAY
+  const colors = [
+    '#85586F',
+    '#B7D3DF',
+    '#C0BBCF',
+    '#898AA6',
+    '#D6EFED',
+    '##DEB6AB',
+    '#957DAD',
+    '#EOBBe4',
+    '#FEC8D8',
+  ];
+  // Calculate the degrees per item for equal slices.
+  const degreePerItem = 360 / items.length;
+
+  // Build the conic-gradient string dynamically.
+  const backgroundString = `conic-gradient(
+      ${items
+        .map((_, i) => {
+          const start = i * degreePerItem;
+          const end = (i + 1) * degreePerItem;
+          // Each slice gets a unique color. Adjust the hue multiplier as needed.
+          return `${colors[i % colors.length]} ${start}deg ${end}deg`;
+        })
+        .join(', ')}
+    )`;
+
   const choreWheelContainerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
     boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),
         10px 4px 6px -2px rgba(0, 0, 0, 0.3),
@@ -319,24 +363,21 @@ function ChoreWheel() {
         `,
   };
   const choreWheelStyle = {
+    width: '100%',
+    aspectRatio: '1 / 1',
+    borderRadius: '50%',
+    border: '5px #aa9e97',
+    height: '100%',
+    maxWidth: '400px',
+    maxHeight: '400px',
     transform: `rotate(${rotation}deg)`,
-    transition: 'transform 0s linear',
+    transition: 'transform 0.5s ease-in-out',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: backgroundString,
   };
-
-  // Calculate the degrees per item for equal slices.
-  const degreePerItem = 360 / items.length;
-
-  // Build the conic-gradient string dynamically.
-  const backgroundString = `conic-gradient(
-    ${items
-      .map((_, i) => {
-        const start = i * degreePerItem;
-        const end = (i + 1) * degreePerItem;
-        // Each slice gets a unique color. Adjust the hue multiplier as needed.
-        return `hsl(${i * 60}, 70%, 60%) ${start}deg ${end}deg`;
-      })
-      .join(', ')}
-  )`;
 
   return (
     <>
@@ -358,24 +399,26 @@ function ChoreWheel() {
             Shuffle Chores
           </button>
         </div>
-        <div id='wheelContainer' className='flex justify-center m-10'>
+        <div id='wheelContainer' className='flex justify-center m-1 pt-15'>
           <div
             id='wheel'
             className='flex-none rounded-full'
-            style={choreWheelContainerStyle}
+            style={{ ...choreWheelContainerStyle, ...choreWheelStyle }}
           >
             <div
               ref={containerRef}
               className='relative w-120 h-120 rounded-full overflow-hidden'
-              style={{
-                // Use the conic-gradient background for the pie slices.
-                background: backgroundString,
-              }}
+              style={
+                {
+                  // Use the conic-gradient background for the pie slices.
+                  // background: backgroundString,
+                }
+              }
             >
               {items.map((item, i) => (
-                <span
+                <div
                   key={i}
-                  className='absolute text-white font-bold'
+                  className='absolute flex flex-col items-center  font-bold text-center'
                   style={{
                     // Position the label in the middle of each slice.
                     top: `calc(50% + ${
@@ -389,13 +432,18 @@ function ChoreWheel() {
                     width: '50px',
                   }}
                 >
-                  {`${item['username']},  \n
+                  <span className='text-base font-extrabold block text-[#f8ecd1]'>
+                    {item.username}
+                  </span>
+                  <span className='text-sm font-normal block'>
+                    {`
                   ${item['chores']
                     .reduce((output, chore) => {
                       return output.concat(Object.values(chore));
                     }, [])
                     .join(', ')}`}
-                </span>
+                  </span>
+                </div>
               ))}
             </div>
           </div>

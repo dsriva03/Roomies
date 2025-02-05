@@ -104,11 +104,9 @@ apiFetch.assignChore = async (userChoreObjArr) => {
   /// a username: string
   /// a chore object arr: [{[choreId: number]: (task_name: string)}]
   // > Function to sift through input to create objects of one userId with one choreId
-  // const newUserArr = [userChoreObjArr];
-  // console.log('newUserArr: ', newUserArr);
-  console.log('userChoreObjectArr: ', userChoreObjArr);
 
-  // const copyArr = userChoreObjArr.slice();
+  // console.log('userChoreObjectArr: ', userChoreObjArr);
+
   /// create an assignment array (should contain two properties:
   /// userId: number, choreId: number)
   const assignmentArr = [];
@@ -122,10 +120,10 @@ apiFetch.assignChore = async (userChoreObjArr) => {
       assignmentArr.push(newUserChoreAssignment);
     }
   }
-  console.log('assignmentArr:', assignmentArr);
+  // console.log('assignmentArr:', assignmentArr);
 
   /// map over assignmenArr
-  await Promise.all(
+  return await Promise.all(
     /// for each assignment, make a put request to update assigned_to property in db
     assignmentArr.map(async (assignment) => {
       const userId = assignment.userId;
@@ -141,7 +139,15 @@ apiFetch.assignChore = async (userChoreObjArr) => {
             choreId,
           }),
         });
-        const data = await response.json();
+        /// check to make sure status is ok/200
+        // console.log('Response status:', response.status);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status}, ${errorText}`);
+        }
+
+        const data = response.json();
+        // console.log('Assign chore response:', data);
         return data;
       } catch (err) {
         console.error(
