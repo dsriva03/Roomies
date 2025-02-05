@@ -54,10 +54,11 @@ function ChoreWheel() {
     getChores();
   }, [choreUpdated]);
 
-  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-  useEffect(() => {
-    getUser();
-  }, [roomieUpdated]);
+    // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+    useEffect(() => {
+      getUser();
+    }, [roomieUpdated]);
+
 
   //split available chores to available users and assign
   useEffect(() => {
@@ -73,16 +74,7 @@ function ChoreWheel() {
     const roomiesArr = allRoomiesMap.map((users) => {
       return [users.id, users.username];
     });
-    // console.log('roomiesArr',roomiesArr)
-    //function to create a new combined array
-    /**
-     * Expected output shape:
-     * roomieWTask = {
-     * id: number,
-     * username: string,
-     * chores: [{choreId: choreName}, ...]
-     * }
-     */
+
     function combineData(user, chores) {
       //init output arr
       const output = [];
@@ -149,20 +141,7 @@ function ChoreWheel() {
     requestAnimationFrame(animate);
   }, []);
 
-  // useEffect(()=>{
-  //   console.log('chores',allChoresMap[0].task_name);
-  //   console.log('roomies',allRoomiesMap[0].username);
-  // }, [allChoresMap, allRoomiesMap]);
-
-  /**
-   *
-   */
-
-  // const items = [
-
-  // ]
-
-  const items = ['josh walk the dog', 'Austin wash dog', 'Aditi sweep floors'];
+  const items = ['josh walk the dog', 'Austin wash dog'];
   const choreWheelContainerStyle = {
     boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -173,86 +152,73 @@ function ChoreWheel() {
   };
   const choreWheelStyle = {
     transform: `rotate(${rotation}deg)`,
-    transition: 'transform 0s linear',
+    transition: "transform 0s linear",
   };
+
+
+  // Calculate the degrees per item for equal slices.
+  const degreePerItem = 360 / items.length;
+
+  // Build the conic-gradient string dynamically.
+  const backgroundString = `conic-gradient(
+    ${items
+      .map((_, i) => {
+        const start = i * degreePerItem;
+        const end = (i + 1) * degreePerItem;
+        // Each slice gets a unique color. Adjust the hue multiplier as needed.
+        return `hsl(${i * 60}, 70%, 60%) ${start}deg ${end}deg`;
+      })
+      .join(", ")}
+  )`;
 
   return (
     <>
       <div
-        className='p-2 m-4 h-8/10 w-1/2 border-[#aa9e97] rounded-[50px]
-             border-4 bg-[#f8ecd1]'
-        id='ChoreWheel'
+        className="p-2 m-4 h-8/10 w-1/2 border-white rounded-[50px]
+             border-5"
+        id="ChoreWheel"
       >
-        <h1 className='text-2xl font-display font-semibold text-sky-900'>
+        <h1 className="text-2xl font-display font-semibold text-sky-900">
           Chore Wheel
         </h1>
-        <div id='wheelContainer' className='flex justify-center m-10'>
+        <div className="flex justify-start"><button className="px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white text-lg font-display font-semibold rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-300"
+        type='submit' onClick={() => {shuffle(allChoresMap)}}>Shuffle Chores</button></div>
+        <div id="wheelContainer" className="flex justify-center m-10">
           <div
-            id='wheel'
-            className='flex-none rounded-full'
+            id="wheel"
+            className="flex-none rounded-full"
             style={choreWheelContainerStyle}
           >
             <div
               ref={containerRef}
-              className='relative w-120 h-120 rounded-full overflow-hidden'
-              style={choreWheelStyle}
+              className="relative w-120 h-120 rounded-full overflow-hidden"
+              style={{
+                // Use the conic-gradient background for the pie slices.
+                background: backgroundString,
+              }}
             >
-              {Array.from(items).map((_, i) => (
-                <div
+              {items.map((item, i) => (
+                <span
                   key={i}
-                  className='absolute w-full h-full'
+                  className="absolute text-white font-bold"
                   style={{
-                    borderRadius: '50%',
-                    clipPath: `polygon(50% 50%, ${
-                      50 +
-                      100 * Math.cos((i * (360 / items.length) * Math.PI) / 180)
-                    }% ${
-                      50 +
-                      100 * Math.sin((i * (360 / items.length) * Math.PI) / 180)
-                    }%, ${
-                      50 +
-                      100 *
-                        Math.cos(
-                          ((i + 1) * (360 / items.length) * Math.PI) / 180
-                        )
-                    }% ${
-                      50 +
-                      100 *
-                        Math.sin(
-                          ((i + 1) * (360 / items.length) * Math.PI) / 180
-                        )
-                    }%)`,
-                    backgroundColor: `hsl(${i * 60}, 70%, 60%)`,
+                    // Position the label in the middle of each slice.
+                  top: `calc(50% + ${30 *
+                    Math.sin(((i + 0.5) * degreePerItem * Math.PI) / 180)}%)`,
+                  left: `calc(50% + ${30 *
+                    Math.cos(((i + 0.5) * degreePerItem * Math.PI) / 180)}%)`,
+                  transform: "translate(-50%, -50%)",
+                  textAlign: "left",
+                  width: "50px",
                   }}
                 >
-                  <span
-                    className='absolute text-white font-bold'
-                    style={{
-                      top: `calc(50% + ${
-                        30 *
-                        Math.sin(
-                          ((i + 0.5) * (360 / items.length) * Math.PI) / 180
-                        )
-                      }%)`,
-                      left: `calc(50% + ${
-                        30 *
-                        Math.cos(
-                          ((i + 0.5) * (360 / items.length) * Math.PI) / 180
-                        )
-                      }%)`,
-                      transform: 'translate(-50%, -50%)',
-                      textAlign: 'center',
-                      width: '50px',
-                    }}
-                  >
-                    {items[i]}
+                    {item}
                   </span>
-                </div>
               ))}
+                </div>
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }
