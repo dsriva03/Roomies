@@ -88,7 +88,7 @@ function Household() {
           value={roomieEmail}
         />
         <button
-          className='font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-2'
+          className='font-display py-1 px-2 m-1 font-normal text-sky-900 shadow-2xl bg-[#D6EFED] hover:bg-[#B7D3DF] border-white rounded-[50px] grow-2 '
           style={{
             boxShadow: `
                         0 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -125,7 +125,7 @@ function Household() {
             createRoomie(roomieName, roomieEmail);
           }}
         >
-          Submit
+          Add
         </button>
       </div>
 
@@ -139,7 +139,7 @@ function Household() {
             readOnly
           />
           <button
-            className='font-sans py-1 px-2 m-1 text-white shadow-2xl bg-red-400 hover:bg-red-500 border-white rounded-[50px] grow-1 justify-center flex'
+            className='font-sans py-1 px-2 m-1 max-w-1/10 text-[#717a7a] shadow-2xl bg-[#FFDFD3] hover:bg-[#85586F] border-white rounded-[50px] grow-1 justify-center flex'
             style={{
               boxShadow: `
                             0 10px 25px -3px rgba(0, 0, 0, 0.3),

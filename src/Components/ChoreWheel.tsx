@@ -54,24 +54,24 @@ function ChoreWheel() {
     getChores();
   }, [choreUpdated]);
 
-    // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-    useEffect(() => {
-      getUser();
-    }, [roomieUpdated]);
+  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+  useEffect(() => {
+    getUser();
+  }, [roomieUpdated]);
 
-    //split available chores to available users and assign
-  useEffect(()=>{
+  //split available chores to available users and assign
+  useEffect(() => {
     // console.log('mapped users',allRoomiesMap);
     // console.log('mapped chores',allChoresMap);
-    const choresArr = allChoresMap.map((chores)=>{
+    const choresArr = allChoresMap.map((chores) => {
       // console.log('chores idk',chores);
-      const choreObj = {}
-      choreObj[chores['id']] = chores.task_name
-      return choreObj
+      const choreObj = {};
+      choreObj[chores['id']] = chores.task_name;
+      return choreObj;
     });
     // console.log('choresArr',choresArr)
-    const roomiesArr = allRoomiesMap.map((users)=>{
-      return [users.id, users.username]
+    const roomiesArr = allRoomiesMap.map((users) => {
+      return [users.id, users.username];
     });
     // console.log('roomiesArr',roomiesArr)
     //function to create a new combined array
@@ -85,49 +85,48 @@ function ChoreWheel() {
      */
     function combineData(user, chores) {
       //init output arr
-      const output = []
+      const output = [];
       //while a2 (chores) has a length greater than 0 create a user obj with the needed properties
-      while (chores.length > 0){
+      while (chores.length > 0) {
         // if we have more chores than users...
-        if(user.length === 0){
+        if (user.length === 0) {
           //iterate over available users in output from the beginning of the arr
-          for(let i = 0; i < output.length; i++){
+          for (let i = 0; i < output.length; i++) {
             //pop a chore arr from chores
             const current = chores.pop();
             //get the user at the current index
             //current shape is user {id: id, username: username, taskId: [id], taskName: [taskName]}
             //push the extra task id in the task arr and taskname in the taskname arr
-            output[i].chores.push(current)
+            output[i].chores.push(current);
             // console.log(`i is ${i} and output length is ${output.length}. Reset i at ${output.length - 1} if chores length is still above 0. chores length is: ${chores.length}`);
             // console.log(`assign ${current} to ${output[i].username}`)
-            if((chores.length > 0) && (i >= output.length - 1)){
+            if (chores.length > 0 && i >= output.length - 1) {
               //assign to -1 so that when the loop resets it will go back to 0
-              i=-1;
+              i = -1;
               // console.log(`resetting i to ${i} now`)
-            }else if(chores.length === 0){
+            } else if (chores.length === 0) {
               break;
             }
           }
           break;
         }
         //pop a user arr from roomies. it should contain [id, username]
-        const current1 = user.pop()
+        const current1 = user.pop();
         //pop a chore from chores. it should contain [id, taskName]
-        const current2 = chores.pop()
+        const current2 = chores.pop();
         //create a user obj with needed keys and fill with popped array values
         const userObj = {
           id: current1[0],
           username: current1[1],
-          chores: [current2]
-        }
+          chores: [current2],
+        };
         //push the new obj to the output arr
         output.push(userObj);
       }
       return output;
     }
-    console.log('combined', combineData(roomiesArr, choresArr));
-  },[allChoresMap, allRoomiesMap]);
-
+    // console.log('combined', combineData(roomiesArr, choresArr));
+  }, [allChoresMap, allRoomiesMap]);
 
   //; CHORE WHEEL ANIMATION
   useEffect(() => {
@@ -180,8 +179,8 @@ function ChoreWheel() {
   return (
     <>
       <div
-        className='p-2 m-4 h-8/10 w-1/2 border-white rounded-[50px]
-             border-5'
+        className='p-2 m-4 h-8/10 w-1/2 border-[#aa9e97] rounded-[50px]
+             border-4 bg-[#f8ecd1]'
         id='ChoreWheel'
       >
         <h1 className='text-2xl font-display font-semibold text-sky-900'>
