@@ -54,10 +54,11 @@ function ChoreWheel() {
     getChores();
   }, [choreUpdated]);
 
-  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-  useEffect(() => {
-    getUser();
-  }, [roomieUpdated]);
+    // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+    useEffect(() => {
+      getUser();
+    }, [roomieUpdated]);
+
 
   //split available chores to available users and assign
   useEffect(() => {
@@ -140,7 +141,7 @@ function ChoreWheel() {
     requestAnimationFrame(animate);
   }, []);
 
-  const items = ['josh walk the dog', 'Austin wash dog', 'Aditi sweep floors'];
+  const items = ['josh walk the dog', 'Austin wash dog'];
   const choreWheelContainerStyle = {
     boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),
