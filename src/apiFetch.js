@@ -98,9 +98,27 @@ apiFetch.createChore = async (task_name, type) => {
 };
 
 // assignChore
-apiFetch.assignChore = async (assignmentArr) => {
-  /// we will recieve an array of assignments objects
+apiFetch.assignChore = async (userChoreObjArr) => {
+  /// we will recieve an array of objects which have the following properties:
+  /// a userId: number
+  /// a username: string
+  /// a chore object arr: [{[choreId: number]: (task_name: string)}]
+  // > Function to sift through input to create objects of one userId with one choreId
+
+  /// create an assignment array (should contain two properties:
+  /// userId: number, choreId: number)
+  const assignmentArr = [];
+
+  /// iterate over input array of objects
+  userChoreObjArr.forEach((obj) => {
+    for (const el of obj.choreId) {
+      convertedArr.push({ userId: obj.userId, choreId: el });
+    }
+  });
+
+  /// map over assignmenArr
   await Promise.all(
+    /// for each assignment, make a put request to update assigned_to property in db
     assignmentArr.map(async (assignment) => {
       const userId = assignment.userId;
       const choreId = assignment.choreId;

@@ -51,19 +51,19 @@ function ChoreList() {
   };
 
   //; TEST FOR ASSIGN CHORE
-  const assignmentArr1 = [
-    { choreId: 8, userId: 4 },
-    { choreId: 9, userId: 2 },
-    { choreId: 10, userId: 4 },
-    { choreId: 11, userId: 2 },
-    { choreId: 12, userId: 4 },
-  ];
+  // const assignmentArr1 = [
+  //   { choreId: 8, userId: 4 },
+  //   { choreId: 9, userId: 2 },
+  //   { choreId: 10, userId: 4 },
+  //   { choreId: 11, userId: 2 },
+  //   { choreId: 12, userId: 4 },
+  // ];
 
-  const testAssign = async () => {
-    const response = await apiFetch.assignChore(assignmentArr1);
-    console.log(response);
-  };
-  testAssign();
+  // const testAssign = async () => {
+  //   const response = await apiFetch.assignChore(assignmentArr1);
+  //   console.log(response);
+  // };
+  // testAssign();
 
   const inputStyle = {
     boxShadow: `
@@ -137,7 +137,7 @@ function ChoreList() {
           )}
         </div>
         <button
-          className='font-sans py-1 px-2 m-1 text-white shadow-2xl bg-fuchsia-400 hover:bg-fuchsia-500 border-white rounded-[50px] grow-1'
+          className='font-display py-1 px-2 max-w-1/10 m-1 font-normal text-sky-900 shadow-2xl bg-[#D6EFED] hover:bg-[#B7D3DF] border-white rounded-[50px] grow-1'
           style={{
             boxShadow: `
                         0 10px 25px -3px rgba(0, 0, 0, 0.3),
@@ -174,7 +174,7 @@ function ChoreList() {
             createChore(choreName, selectedChoreType);
           }}
         >
-          Add Chore
+          Add
         </button>
       </div>
       <div className='m-6'></div>
@@ -187,7 +187,7 @@ function ChoreList() {
             readOnly
           />
           <button
-            className='font-sans py-1 px-2 m-1 text-white shadow-2xl bg-red-400 hover:bg-red-500 border-white rounded-[50px] grow-1 justify-center flex'
+            className='font-sans py-1 px-2 m-1 text-[#717a7a] shadow-2xl bg-[#FFDFD3] hover:bg-[#85586F] border-white rounded-[50px] grow-1 justify-center flex'
             style={{
               boxShadow: `
                             0 10px 25px -3px rgba(0, 0, 0, 0.3),
