@@ -107,21 +107,22 @@ apiFetch.assignChore = async (userChoreObjArr) => {
   // const newUserArr = [userChoreObjArr];
   // console.log('newUserArr: ', newUserArr);
   console.log('userChoreObjectArr: ', userChoreObjArr);
-  console.log('is userChoreObjArr an array? ', Array.isArray(userChoreObjArr));
+
   // const copyArr = userChoreObjArr.slice();
   /// create an assignment array (should contain two properties:
   /// userId: number, choreId: number)
   const assignmentArr = [];
 
   /// iterate over input array of objects
-  for (const obj in userChoreObjArr) {
-    console.log('this is chores ', obj['chores']);
-    for (const el of obj['chores']) {
-      console.log('this is the obj', obj);
-
-      assignmentArr.push({ userId: obj['id'], choreId: el });
+  for (const obj of userChoreObjArr) {
+    for (const choreProperty of obj['chores']) {
+      const newUserChoreAssignment = {};
+      newUserChoreAssignment.userId = obj['id'];
+      newUserChoreAssignment.choreId = Number(Object.keys(choreProperty));
+      assignmentArr.push(newUserChoreAssignment);
     }
   }
+  console.log('assignmentArr:', assignmentArr);
 
   /// map over assignmenArr
   await Promise.all(
