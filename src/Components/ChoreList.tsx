@@ -127,7 +127,7 @@ function ChoreList() {
                       setSelectedChoreType(option);
                       setIsOpen(false);
                     }}
-                    className='block w-full text-left font-sans text-sky-900 px-2 py-1 text-sm bg-white hover:bg-fuchsia-400 hover:text-white focus:bg-gray-100 focus:outline-none'
+                    className='block w-full text-left font-sans text-sky-900 px-2 py-1 text-sm bg-white hover:bg-[#85586F] hover:text-white focus:bg-gray-100 focus:outline-none'
                   >
                     {option}
                   </button>

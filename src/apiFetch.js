@@ -104,27 +104,26 @@ apiFetch.assignChore = async (userChoreObjArr) => {
   /// a username: string
   /// a chore object arr: [{[choreId: number]: (task_name: string)}]
   // > Function to sift through input to create objects of one userId with one choreId
-  // const newUserArr = [userChoreObjArr];
-  // console.log('newUserArr: ', newUserArr);
-  console.log('userChoreObjectArr: ', userChoreObjArr);
-  console.log('is userChoreObjArr an array? ', Array.isArray(userChoreObjArr));
-  // const copyArr = userChoreObjArr.slice();
+
+  // console.log('userChoreObjectArr: ', userChoreObjArr);
+
   /// create an assignment array (should contain two properties:
   /// userId: number, choreId: number)
   const assignmentArr = [];
 
   /// iterate over input array of objects
-  for (const obj in userChoreObjArr) {
-    console.log('this is chores ', obj['chores']);
-    for (const el of obj['chores']) {
-      console.log('this is the obj', obj);
-
-      assignmentArr.push({ userId: obj['id'], choreId: el });
+  for (const obj of userChoreObjArr) {
+    for (const choreProperty of obj['chores']) {
+      const newUserChoreAssignment = {};
+      newUserChoreAssignment.userId = obj['id'];
+      newUserChoreAssignment.choreId = Number(Object.keys(choreProperty));
+      assignmentArr.push(newUserChoreAssignment);
     }
   }
+  // console.log('assignmentArr:', assignmentArr);
 
   /// map over assignmenArr
-  await Promise.all(
+  return await Promise.all(
     /// for each assignment, make a put request to update assigned_to property in db
     assignmentArr.map(async (assignment) => {
       const userId = assignment.userId;
@@ -140,7 +139,15 @@ apiFetch.assignChore = async (userChoreObjArr) => {
             choreId,
           }),
         });
-        const data = await response.json();
+        /// check to make sure status is ok/200
+        // console.log('Response status:', response.status);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status}, ${errorText}`);
+        }
+
+        const data = response.json();
+        // console.log('Assign chore response:', data);
         return data;
       } catch (err) {
         console.error(

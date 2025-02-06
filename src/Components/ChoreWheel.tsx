@@ -19,9 +19,18 @@ interface Roomies {
   created_at: Date;
 }
 interface Assignment {
-  chores: (number | string)[];
-  username: number;
+  chores: choreIdAndTaskName[];
+  username: string;
   id: number;
+}
+
+// interface choreIdAndTaskName {
+//   id: number;
+//   task_name: string;
+// }
+
+interface choreIdAndTaskName {
+  [key: number]: string;
 }
 
 //; CHORE WHEEL COMPONENT
@@ -30,11 +39,13 @@ function ChoreWheel() {
   const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
   const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
   const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
-  const [shuffledAssignment, setShuffledAssignment] = useState<Assignment[]>({
-    chores: [{ 1: 'sweep' }, { 2: 'take out trash' }],
-    id: 1,
-    username: 'Adeets',
-  });
+  const [shuffledAssignment, setShuffledAssignment] = useState<Assignment[]>([
+    {
+      chores: [{ 1: 'sweep' }, { 2: 'take out trash' }],
+      id: 1,
+      username: 'Adeets',
+    },
+  ]);
   const containerRef = useRef(null);
   const [rotation, setRotation] = useState<number>(0);
 
@@ -69,80 +80,132 @@ function ChoreWheel() {
     getUser();
   }, [roomieUpdated]);
 
-  //split available chores to available users and assign
-  // ; HANDLER FUNCTION TO SHUFFLE CHORES AND SIGN TO USERS
-  const shuffleAndAssign = async (allChoresMap) => {
-    const shuffledChores = shuffle(allChoresMap);
-    // console.log('mapped users',allRoomiesMap);
-    // console.log('mapped chores',allChoresMap);
-    const choresArr = shuffledChores.map((chores) => {
-      // console.log('chores idk',chores);
-      const choreObj = {};
-      choreObj[chores['id']] = chores.task_name;
-      return choreObj;
-    });
-    // console.log('choresArr',choresArr)
-    const roomiesArr = allRoomiesMap.map((users) => {
-      return [users.id, users.username];
-    });
+  // ; HANDLER TO SHUFFLE CHORE ARRAY AND FORMAT USERS ARRAY
+  const handleShuffleAndAssign = (
+    allChoresMap: Chores[],
+    allRoomiesMap: Roomies[]
+  ) => {
+    const allChoresMapCopy = [...allChoresMap];
 
-    function combineData(user, chores) {
-      //init output arr
-      const output = [];
-      //while a2 (chores) has a length greater than 0 create a user obj with the needed properties
-      while (chores.length > 0) {
-        // if we have more chores than users...
-        if (user.length === 0) {
-          //iterate over available users in output from the beginning of the arr
-          for (let i = 0; i < output.length; i++) {
-            //pop a chore arr from chores
-            const current = chores.pop();
-            //get the user at the current index
-            //current shape is user {id: id, username: username, taskId: [id], taskName: [taskName]}
-            //push the extra task id in the task arr and taskname in the taskname arr
-            output[i].chores.push(current);
-            // console.log(`i is ${i} and output length is ${output.length}. Reset i at ${output.length - 1} if chores length is still above 0. chores length is: ${chores.length}`);
-            // console.log(`assign ${current} to ${output[i].username}`)
-            if (chores.length > 0 && i >= output.length - 1) {
-              //assign to -1 so that when the loop resets it will go back to 0
-              i = -1;
-              // console.log(`resetting i to ${i} now`)
-            } else if (chores.length === 0) {
-              break;
-            }
+    const shuffledChores = shuffle(allChoresMapCopy);
+    // console.log('shuffledChores: ', shuffledChores);
+
+    const choresIdAndTaskName: choreIdAndTaskName[] = [];
+    // const choresArr: choreIdAndTaskName[] = [];
+    shuffledChores.forEach((chores: Chores) => {
+      const newObj: choreIdAndTaskName = {
+        [chores['id']]: chores.task_name,
+      };
+      // console.log('newObj:', newObj);
+      choresIdAndTaskName.push(newObj);
+    });
+    console.log('choresIdandTaskName:', choresIdAndTaskName);
+
+    // console.log('allRoomiesMap: ', allRoomiesMap);
+
+    const allRoomiesMapCopy = [...allRoomiesMap]; /// array of objects
+    // console.log('allroomiesmapcopy: ', allRoomiesMapCopy);
+
+    // console.log('choresArr',choresArr)
+    const roomiesIdAndName: [number, string][] = [];
+    allRoomiesMapCopy.forEach((user) =>
+      roomiesIdAndName.push([user.id, user.username])
+    );
+    console.log('roomiesIdAndName:', roomiesIdAndName);
+    return [roomiesIdAndName, choresIdAndTaskName];
+  };
+  // console.log(handleShuffleAndAssign(allChoresMap, allRoomiesMap));
+
+  // ; HANDLER FUNCTION TO SHUFFLE CHORES AND SIGN TO USERS
+  const combineData = (user, chores) => {
+    // console.log('roomiesArr: ', roomiesArr);
+    //init output arr
+    const output = [];
+    //while a2 (chores) has a length greater than 0 create a user obj with the needed properties
+    while (chores.length > 0) {
+      // if we have more chores than users...
+      if (user.length === 0) {
+        //iterate over available users in output from the beginning of the arr
+        for (let i = 0; i < output.length; i++) {
+          //pop a chore arr from chores
+          const current = chores.pop();
+          //get the user at the current index
+          //current shape is user {id: id, username: username, taskId: [id], taskName: [taskName]}
+          //push the extra task id in the task arr and taskname in the taskname arr
+          output[i].chores.push(current);
+          // console.log(`i is ${i} and output length is ${output.length}. Reset i at ${output.length - 1} if chores length is still above 0. chores length is: ${chores.length}`);
+          // console.log(`assign ${current} to ${output[i].username}`)
+          if (chores.length > 0 && i >= output.length - 1) {
+            //assign to -1 so that when the loop resets it will go back to 0
+            i = -1;
+            // console.log(`resetting i to ${i} now`)
+          } else if (chores.length === 0) {
+            break;
           }
-          break;
         }
-        //pop a user arr from roomies. it should contain [id, username]
-        const current1 = user.pop();
-        //pop a chore from chores. it should contain [id, taskName]
-        const current2 = chores.pop();
-        //create a user obj with needed keys and fill with popped array values
-        const userObj = {
-          id: current1[0],
-          username: current1[1],
-          chores: [current2],
-        };
-        //push the new obj to the output arr
-        output.push(userObj);
+        break;
       }
-      return output;
+      //pop a user arr from roomies. it should contain [id, username]
+      const current1 = user.pop();
+      //pop a chore from chores. it should contain [id, taskName]
+      const current2 = chores.pop();
+      //create a user obj with needed keys and fill with popped array values
+      const userObj = {
+        id: current1[0],
+        username: current1[1],
+        chores: [current2],
+      };
+      //push the new obj to the output arr
+      output.push(userObj);
     }
-    const combined = combineData(roomiesArr, choresArr);
-    setShuffledAssignment(combined);
+    return output;
+  };
+  // const combined = combineData(roomiesIdAndName, choresIdAndTaskName);
+
+  // const handleAssigningFetch = async () => {
+  //   try {
+  //     // const = shuffledAssignmentCopy =
+  //     // const copyArr = [...shuffledAssignment];
+  //     const response = await apiFetch.assignChore(shuffledAssignment);
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (err) {
+  //     console.error('Error in apiFetch.assignChore(shuffledAssignment)', err);
+  //   }
+  // }
+
+  //; ONE HANDLER TO RULE THEM ALL...
+  const handleShuffleConvertFetch = async () => {
+    const shuffledArr = handleShuffleAndAssign(allChoresMap, allRoomiesMap);
+    // console.log('shuffledArr:', shuffledArr);
+    const users = shuffledArr[0];
+    const chores = shuffledArr[1];
+    const combined = combineData(users, chores);
+    console.log('combined: ', combined);
 
     try {
-      console.log('type of shuffledAssignment', typeof shuffledAssignment);
-      console.log('shuffledAssignment', shuffledAssignment);
+      // const = shuffledAssignmentCopy =
       // const copyArr = [...shuffledAssignment];
-      const response = await apiFetch.assignChore(shuffledAssignment);
-      const data = await response.json();
-      console.log(data);
+
+      const response = await apiFetch.assignChore(combined);
+
+      if (response) {
+        console.log('AssignChore Response:', response);
+      } else {
+        console.warn('No response received from apiFetch.assignChore');
+      }
+      // const data = await response.json();
+
+      setShuffledAssignment(combined);
     } catch (err) {
       console.error('Error in apiFetch.assignChore(shuffledAssignment)', err);
     }
-    console.log('combined', combineData(roomiesArr, choresArr));
   };
+
+  useEffect(() => {
+    getChores();
+    getUser();
+  }, [shuffledAssignment]);
 
   // useEffect(() => {
   //   const shuffledChores = shuffle(allChoresMap);
@@ -257,7 +320,41 @@ function ChoreWheel() {
     },
   ];
   // const items = ['joshy', 'Amrita', 'Adeets'];
+  //; CUSTOM COLORS ARRAY
+  const colors = [
+    '#85586F',
+    '#B7D3DF',
+    '#C0BBCF',
+    '#898AA6',
+    '#D6EFED',
+    '##DEB6AB',
+    '#957DAD',
+    '#EOBBe4',
+    '#FEC8D8',
+  ];
+  // Calculate the degrees per item for equal slices.
+  const degreePerItem = 360 / items.length;
+
+  // Build the conic-gradient string dynamically.
+  const backgroundString = `conic-gradient(
+      ${items
+        .map((_, i) => {
+          const start = i * degreePerItem;
+          const end = (i + 1) * degreePerItem;
+          // Each slice gets a unique color. Adjust the hue multiplier as needed.
+          return `${colors[i % colors.length]} ${start}deg ${end}deg`;
+        })
+        .join(', ')}
+    )`;
+
   const choreWheelContainerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
     boxShadow: `
         10px 10px 25px -3px rgba(0, 0, 0, 0.3),
         10px 4px 6px -2px rgba(0, 0, 0, 0.3),
@@ -266,24 +363,21 @@ function ChoreWheel() {
         `,
   };
   const choreWheelStyle = {
+    width: '100%',
+    aspectRatio: '1 / 1',
+    borderRadius: '50%',
+    border: '5px #aa9e97',
+    height: '100%',
+    maxWidth: '400px',
+    maxHeight: '400px',
     transform: `rotate(${rotation}deg)`,
-    transition: 'transform 0s linear',
+    transition: 'transform 0.5s ease-in-out',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: backgroundString,
   };
-
-  // Calculate the degrees per item for equal slices.
-  const degreePerItem = 360 / items.length;
-
-  // Build the conic-gradient string dynamically.
-  const backgroundString = `conic-gradient(
-    ${items
-      .map((_, i) => {
-        const start = i * degreePerItem;
-        const end = (i + 1) * degreePerItem;
-        // Each slice gets a unique color. Adjust the hue multiplier as needed.
-        return `hsl(${i * 60}, 70%, 60%) ${start}deg ${end}deg`;
-      })
-      .join(', ')}
-  )`;
 
   return (
     <>
@@ -299,30 +393,32 @@ function ChoreWheel() {
             className='font-display py-1 px-2 max-w-3/10 m-1 font-normal text-sky-900 shadow-2xl bg-[#D6EFED] hover:bg-[#B7D3DF] border-white rounded-[50px] grow-1'
             type='submit'
             onClick={() => {
-              shuffleAndAssign(allChoresMap);
+              handleShuffleConvertFetch();
             }}
           >
             Shuffle Chores
           </button>
         </div>
-        <div id='wheelContainer' className='flex justify-center m-10'>
+        <div id='wheelContainer' className='flex justify-center m-1 pt-15'>
           <div
             id='wheel'
             className='flex-none rounded-full'
-            style={choreWheelContainerStyle}
+            style={{ ...choreWheelContainerStyle, ...choreWheelStyle }}
           >
             <div
               ref={containerRef}
               className='relative w-120 h-120 rounded-full overflow-hidden'
-              style={{
-                // Use the conic-gradient background for the pie slices.
-                background: backgroundString,
-              }}
+              style={
+                {
+                  // Use the conic-gradient background for the pie slices.
+                  // background: backgroundString,
+                }
+              }
             >
               {items.map((item, i) => (
-                <span
+                <div
                   key={i}
-                  className='absolute text-white font-bold'
+                  className='absolute flex flex-col items-center  font-bold text-center'
                   style={{
                     // Position the label in the middle of each slice.
                     top: `calc(50% + ${
@@ -336,13 +432,18 @@ function ChoreWheel() {
                     width: '50px',
                   }}
                 >
-                  {`${item['username']},  \n
+                  <span className='text-base font-extrabold block text-[#f8ecd1]'>
+                    {item.username}
+                  </span>
+                  <span className='text-sm font-normal block'>
+                    {`
                   ${item['chores']
                     .reduce((output, chore) => {
                       return output.concat(Object.values(chore));
                     }, [])
                     .join(', ')}`}
-                </span>
+                  </span>
+                </div>
               ))}
             </div>
           </div>
