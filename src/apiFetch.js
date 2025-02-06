@@ -117,6 +117,7 @@ apiFetch.assignChore = async (userChoreObjArr) => {
       const newUserChoreAssignment = {};
       newUserChoreAssignment.userId = obj['id'];
       newUserChoreAssignment.choreId = Number(Object.keys(choreProperty));
+      // console.log('choreprop:', choreProperty);
       assignmentArr.push(newUserChoreAssignment);
     }
   }
