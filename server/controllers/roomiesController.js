@@ -43,15 +43,17 @@ roomiesController.createUser = async (req, res, next) => {
 
 roomiesController.deleteUser = async (req, res, next) => {
   const { id } = req.params;
-
+  console.log(' Received DELETE request for user ID:', id);
   if (!id) {
     return res.status(400).json({ error: 'User ID is not defined.' });
   }
 
-  const deleteQuery = 'DELETE FROM users WHERE id = $1 RETURNING *;';
+  const deleteQuery = 'DELETE FROM users WHERE id = $1 RETURNING *';
 
   try {
+    console.log('Running DELETE query...');
     const result = await pool.query(deleteQuery, [id]);
+
     console.log('this is result.rows', result.rows[0]);
 
     res.locals.deletedUser = result.rows[0];

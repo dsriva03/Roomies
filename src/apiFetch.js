@@ -13,6 +13,7 @@ apiFetch.createUser = async (username, email) => {
         email,
       }),
     });
+    console.log('this is the apiFetch.createUser response', response);
 
     if (!response.ok) {
       throw new Error(`Error in creating user: ${response.status}`);
@@ -28,19 +29,20 @@ apiFetch.createUser = async (username, email) => {
 
 //deleteUser
 apiFetch.deleteUser = async (id) => {
+  console.log('userId in apiFetch.deleteUser:', id);
   try {
     const response = await fetch(`http://localhost:8080/api/deleteUser/${id}`, {
-      //!check id proper syntax
-      //!possibly pass in username instead s
       method: 'DELETE',
     });
-
+    // console.log('this is the apiFetch.deleteUser response', response);
     if (!response.ok) {
+      // console.log('this is the not ok response ', response);
       throw new Error('Error in deleting user: ', response.error);
+      // return Promise.reject(response);
     }
 
     const data = await response.json();
-    console.log('This is the deleted user: ', data);
+    console.log('This is the deleted user data on line 46: ', data);
     return data;
   } catch (err) {
     console.error('THIS IS THE ERROR: ', err);
@@ -205,6 +207,7 @@ apiFetch.assignChore = async (userChoreObjArr) => {
 
 //deleteChore
 apiFetch.deleteChore = async (id) => {
+  console.log('typeofid', typeof id);
   try {
     const response = await fetch(
       `http://localhost:8080/api/deleteChore/${id}`,
