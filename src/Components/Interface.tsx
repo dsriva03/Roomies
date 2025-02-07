@@ -3,9 +3,10 @@ import ChoreList from './ChoreList.tsx';
 
 interface InterfaceProps {
   setRoomieUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  setChoreUpdated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function Interface({ setRoomieUpdated }: InterfaceProps) {
+function Interface({ setRoomieUpdated, setChoreUpdated }: InterfaceProps) {
   return (
     <>
       <div
@@ -16,7 +17,7 @@ function Interface({ setRoomieUpdated }: InterfaceProps) {
           Interface
         </h1>
         <Household setRoomieUpdated={setRoomieUpdated} />
-        <ChoreList />
+        <ChoreList setChoreUpdated={setChoreUpdated} />
       </div>
     </>
   );
