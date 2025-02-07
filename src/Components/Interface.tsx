@@ -1,7 +1,11 @@
 import Household from './Household.tsx';
 import ChoreList from './ChoreList.tsx';
 
-function Interface() {
+interface InterfaceProps {
+  setRoomieUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function Interface({ setRoomieUpdated }: InterfaceProps) {
   return (
     <>
       <div
@@ -11,7 +15,7 @@ function Interface() {
         <h1 className='text-2xl font-display font-semibold text-sky-900'>
           Interface
         </h1>
-        <Household />
+        <Household setRoomieUpdated={setRoomieUpdated} />
         <ChoreList />
       </div>
     </>

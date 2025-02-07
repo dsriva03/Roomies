@@ -1,4 +1,4 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 import Interface from './Components/Interface.tsx';
@@ -6,6 +6,10 @@ import ChoreWheel from './Components/ChoreWheel.tsx';
 
 function App() {
   // const [count, setCount] = useState(0)
+  /// create roomieUpdated state here and pass down as prop for a shared state
+  /// this way, when household/user adds information to db, chore wheel can reflect
+  /// those changes visually
+  const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
 
   return (
     <>
@@ -25,8 +29,8 @@ function App() {
           ROOMIES
         </h1>
         <div id='Sub' className='flex h-full'>
-          <Interface />
-          <ChoreWheel />
+          <Interface setRoomieUpdated={setRoomieUpdated} />
+          <ChoreWheel roomieUpdated={roomieUpdated} />
         </div>
       </div>
     </>

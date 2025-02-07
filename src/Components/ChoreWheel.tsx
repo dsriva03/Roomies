@@ -24,33 +24,45 @@ interface Assignment {
   id: number;
 }
 
-// interface choreIdAndTaskName {
-//   id: number;
-//   task_name: string;
-// }
-
 interface choreIdAndTaskName {
   [key: number]: string;
 }
 
+interface ChoreWheelProps {
+  roomieUpdated: boolean;
+}
+
 //; CHORE WHEEL COMPONENT
-function ChoreWheel() {
+function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
   const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
   const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
-  const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
-  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
-  const [shuffledAssignment, setShuffledAssignment] = useState<Assignment[]>([
-    // {
-    //   chores: [{ 1: 'sweep' }, { 2: 'take out trash' }],
-    //   id: 1,
-    //   username: 'Adeets',
-    // },
-  ]);
+  // const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
+  // const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
+  const [shuffledAssignment, setShuffledAssignment] = useState<Assignment[]>(
+    []
+  );
 
   const containerRef = useRef(null);
   const [rotation, setRotation] = useState<number>(0);
 
-  // get chores
+  // > USEEFFECT FOR RERENDER IN CHORE CREATION AND DELETION
+  useEffect(() => {
+    getChores();
+  }, []);
+
+  // > USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
+  useEffect(() => {
+    getUser();
+  }, [roomieUpdated]);
+
+  // > USE EFFECT TO DISPLAY INFO ON CHOREWHEEL ON INITIAL RENDER
+  /// initially, empty, the componenct mounts once before roomies/choresMap has been fetched.
+  /// this useState will rerender component once allRoomiesMap/allChoresMap has been updated by getChores and getUser
+  useEffect(() => {
+    choreWheelDisplay();
+  }, [allRoomiesMap, allChoresMap]);
+
+  // > GET CHORES FUNCTION
   const getChores = async () => {
     try {
       const result = await apiFetch.getChores();
@@ -60,7 +72,28 @@ function ChoreWheel() {
     }
   };
 
-  // get users
+  // > CHORE WHEEL ANIMATION
+  useEffect(() => {
+    let startTime: number;
+    const duration = 1000; // 5 seconds
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+
+      if (elapsed < duration) {
+        const newRotation = (elapsed / duration) * 360; // Gradually rotate from 0 to 360 degrees
+        setRotation(newRotation);
+        requestAnimationFrame(animate);
+      } else {
+        setRotation(360); // Ensure it stops at a full rotation
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, []);
+
+  // > GET USER FUNCTION
   const getUser = async () => {
     try {
       const result = await apiFetch.getUsers();
@@ -71,23 +104,10 @@ function ChoreWheel() {
     }
   };
 
-  // ; USEEFFECT FOR RERENDER IN CHORE CREATION AND DELETION
-  useEffect(() => {
-    getChores();
-  }, [choreUpdated]);
-
-  // ; USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
-  useEffect(() => {
-    getUser();
-  }, [roomieUpdated]);
-
-  // ; HANDLER TO SHUFFLE CHORE ARRAY AND FORMAT USERS ARRAY
+  // > HANDLER TO EXTRACT PROPERTIES FROM ALLCHORESMAP AND ALLROOMIESMAP
   // allChoresMap: Chores[],
   // allRoomiesMap: Roomies[]
   const handleExtraction = (shuffledChores: Chores[]) => {
-    // const allChoresMapCopy = [...allChoresMap];
-
-    // const shuffledChores = shuffle(allChoresMapCopy);
     // console.log('shuffledChores: ', shuffledChores);
 
     const choresIdAndTaskName: choreIdAndTaskName[] = [];
@@ -116,7 +136,7 @@ function ChoreWheel() {
   };
   // console.log(handleShuffleAndAssign(allChoresMap, allRoomiesMap));
 
-  // ; HANDLER FUNCTION TO SHUFFLE CHORES AND SIGN TO USERS
+  // > HANDLER FUNCTION TO SHUFFLE CHORES AND SIGN TO USERS
   const combineData = (user, chores) => {
     // console.log('roomiesArr: ', roomiesArr);
     //init output arr
@@ -161,15 +181,15 @@ function ChoreWheel() {
     return output;
   };
 
-  //; ONE HANDLER TO RULE THEM ALL...
+  // > ONE HANDLER TO RULE THEM ALL...
   const handleShuffleConvertFetch = async () => {
     // ; INVOKE SHUFFLE HERE INSTEAD
     const allChoresMapCopy = [...allChoresMap];
     const shuffledChores = shuffle(allChoresMapCopy);
-    const shuffledArr = handleExtraction(shuffledChores);
-    console.log('shuffledArr:', shuffledArr);
-    const users = shuffledArr[0];
-    const chores = shuffledArr[1];
+    const extractedData = handleExtraction(shuffledChores);
+    console.log('extractedData:', extractedData);
+    const users = extractedData[0];
+    const chores = extractedData[1];
     const combined = combineData([...users], [...chores]);
 
     // console.log('combined: ', combined);
@@ -182,54 +202,17 @@ function ChoreWheel() {
 
       if (response) {
         console.log('AssignChore Response:', response);
-      } else {
-        console.warn('No response received from apiFetch.assignChore');
       }
-      // const data = await response.json();
-
-      // console.log('syncedCombineLog', combined);
-      setShuffledAssignment(combined);
+      setShuffledAssignment([...combined]);
       // console.log('syncedShuffleLog', shuffledAssignment);
     } catch (err) {
       console.error('Error in apiFetch.assignChore(shuffledAssignment)', err);
     }
   };
 
-  useEffect(() => {
-    getChores();
-    getUser();
-    /// INVOKE CHOREWHEELDISPLAY
-  }, [shuffledAssignment]);
-
-  //; CHORE WHEEL ANIMATION
-  useEffect(() => {
-    let startTime: number;
-    const duration = 1000; // 5 seconds
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-
-      if (elapsed < duration) {
-        const newRotation = (elapsed / duration) * 360; // Gradually rotate from 0 to 360 degrees
-        setRotation(newRotation);
-        requestAnimationFrame(animate);
-      } else {
-        setRotation(360); // Ensure it stops at a full rotation
-      }
-    };
-
-    requestAnimationFrame(animate);
-  }, []);
-  // run choreWheelDisplay() everytime allChoresMap, allRoomiesMap, and Items rerender state
-  useEffect(() => {
-    console.log('shuffledAssignment', shuffledAssignment);
-    choreWheelDisplay();
-  }, []);
-  // ; HANDLER TO PULL UPDATED ROOMIESMAP AND CHORESMAP FOR DYNAMIC WHEEL
-
-  // > app renders initially: trigger chore wheel display which invokes map on items array on line 368
-  // > when we hit shuffle, the database updated then rerenders the chorewheel---> this function is invoked because of rerending of app
+  // > CHORE WHEEL DISPLAY
+  /// app renders initially: trigger chore wheel display which invokes map on items array on line 368
+  /// when we hit shuffle, the database updated then rerenders the chorewheel---> this function is invoked because of rerending of app
   const choreWheelDisplay = () => {
     /// access allChoresMap and allRoomiesMap
     //invoke combineData
@@ -240,8 +223,10 @@ function ChoreWheel() {
     const chores = vanillaExtract[1];
     const combined = combineData(users, chores);
     /// updated items state?
-    ///
-    setShuffledAssignment(combined);
+    ///  MAYBE ONLY INVOKE IF THE SHUFFLED ASSIGNMENT IS DIFFERENT FROM COMBINED DATA
+    if (JSON.stringify(shuffledAssignment) !== JSON.stringify(combined)) {
+      setShuffledAssignment(combined);
+    }
   };
 
   const items = [
@@ -346,6 +331,15 @@ function ChoreWheel() {
         <div className='flex justify-start'>
           <button
             className='font-display py-1 px-2 max-w-3/10 m-1 font-normal text-sky-900 shadow-2xl bg-[#D6EFED] hover:bg-[#B7D3DF] border-white rounded-[50px] grow-1'
+            style={{
+              boxShadow: `
+                            0 10px 25px -3px rgba(0, 0, 0, 0.3),
+                            0 4px 6px -2px rgba(0, 0, 0, 0.6),
+                            0 20px 25px -5px rgba(0, 0, 0, 0.2),
+                            inset 0 2px 2px rgba(255, 255, 255, 0.95)
+                            `,
+              transition: 'all 0.1s ease-in-out',
+            }}
             type='submit'
             onClick={() => {
               handleShuffleConvertFetch();
@@ -362,7 +356,7 @@ function ChoreWheel() {
           >
             <div
               ref={containerRef}
-              className='relative w-120 h-120 rounded-full overflow-hidden'
+              className='relative w-120 h-120 rounded-full overflow-wrap'
               style={
                 {
                   // Use the conic-gradient background for the pie slices.
