@@ -12,12 +12,16 @@ interface Chores {
   created_at: Date | null;
 }
 
-function ChoreList() {
+interface ChorelistProps {
+  setChoreUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+function ChoreList({ setChoreUpdated }: ChorelistProps) {
   const [choreName, setChoreName] = useState<string>('');
-  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
+  // const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
   const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedChoreType, setSelectedChoreType] = useState<string>('daily');
+  const [updateChorelist, setUpdateChorelist] = useState<boolean>(false);
 
   const options = ['daily', 'weekly', 'monthly', 'one-time'];
 
@@ -26,6 +30,7 @@ function ChoreList() {
     console.log('id from param in handleDelete', id);
     await apiFetch.deleteChore(id);
     setChoreUpdated((prev) => !prev);
+    setUpdateChorelist((prev) => !prev);
   };
 
   // ; FUNCTION TO GET CHORES (for displaying in chorelist)
@@ -41,10 +46,11 @@ function ChoreList() {
   // ; USEEFFECT FOR RERENDER IN CHORE CREATION AND DELETION
   useEffect(() => {
     getChores();
-  }, [choreUpdated]);
+  }, [updateChorelist]);
 
   const createChore = async (givenTitle: string, givenType: string) => {
     await apiFetch.createChore(givenTitle, givenType);
+    setUpdateChorelist((prev) => !prev);
     setChoreUpdated((prev) => !prev);
     setSelectedChoreType('daily');
     setChoreName('');
