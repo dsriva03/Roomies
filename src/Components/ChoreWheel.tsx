@@ -30,10 +30,11 @@ interface choreIdAndTaskName {
 
 interface ChoreWheelProps {
   roomieUpdated: boolean;
+  choreUpdated: boolean;
 }
 
 //; CHORE WHEEL COMPONENT
-function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
+function ChoreWheel({ roomieUpdated, choreUpdated }: ChoreWheelProps) {
   const [allRoomiesMap, setAllRoomiesMap] = useState<Roomies[]>([]);
   const [allChoresMap, setAllChoresMap] = useState<Chores[]>([]);
   // const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
@@ -53,7 +54,7 @@ function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
   // > USE-EFFECT TO RERENDER WHEN NEW ROOMIE IS CREATED
   useEffect(() => {
     getUser();
-  }, [roomieUpdated]);
+  }, [roomieUpdated, choreUpdated]);
 
   // > USE EFFECT TO DISPLAY INFO ON CHOREWHEEL ON INITIAL RENDER
   /// initially, empty, the componenct mounts once before roomies/choresMap has been fetched.
@@ -273,11 +274,12 @@ function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
     '#FEC8D8',
   ];
   // Calculate the degrees per item for equal slices.
-  const degreePerItem = 360 / items.length;
+  const degreePerItem =
+    shuffledAssignment.length > 0 ? 360 / shuffledAssignment.length : 360;
 
   // Build the conic-gradient string dynamically.
   const backgroundString = `conic-gradient(
-      ${items
+      ${shuffledAssignment
         .map((_, i) => {
           const start = i * degreePerItem;
           const end = (i + 1) * degreePerItem;
@@ -318,6 +320,8 @@ function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
     justifyContent: 'center',
     background: backgroundString,
   };
+
+  const sliceRadius = 25;
 
   return (
     <>
@@ -364,36 +368,42 @@ function ChoreWheel({ roomieUpdated }: ChoreWheelProps) {
                 }
               }
             >
-              {shuffledAssignment.map((item, i) => (
-                <div
-                  key={i}
-                  className='absolute flex flex-col items-center  font-bold text-center'
-                  style={{
-                    // Position the label in the middle of each slice.
-                    top: `calc(50% + ${
-                      30 * Math.sin(((i + 0.5) * degreePerItem * Math.PI) / 180)
-                    }%)`,
-                    left: `calc(50% + ${
-                      30 * Math.cos(((i + 0.5) * degreePerItem * Math.PI) / 180)
-                    }%)`,
-                    transform: 'translate(-50%, -50%)',
-                    textAlign: 'left',
-                    width: '50px',
-                  }}
-                >
-                  <span className='text-base font-extrabold block text-[#f8ecd1]'>
-                    {item.username}
-                  </span>
-                  <span className='text-sm font-normal block'>
-                    {`
-                  ${item['chores']
-                    .reduce((output, chore) => {
-                      return output.concat(Object.values(chore));
-                    }, [])
-                    .join(', ')}`}
-                  </span>
-                </div>
-              ))}
+              {shuffledAssignment.map((item, i) => {
+                const angle = (i + 0.5) * degreePerItem; // Midpoint of slice
+                const xPos = `calc(50% + ${
+                  sliceRadius * Math.cos((angle * Math.PI) / 180)
+                }%)`;
+                const yPos = `calc(50% + ${
+                  sliceRadius * Math.sin((angle * Math.PI) / 180)
+                }%)`;
+
+                return (
+                  <div
+                    key={i}
+                    className='absolute flex flex-col items-center font-bold text-center'
+                    style={{
+                      top: yPos,
+                      left: xPos,
+                      transform: 'translate(-50%, -50%)',
+                      textAlign: 'center',
+                      width: '60px',
+                    }}
+                  >
+                    <span className='text-base font-extrabold block text-[#f8ecd1]'>
+                      {item.username}
+                    </span>
+                    <span className='text-sm font-normal block'>
+                      {item.chores
+                        .reduce(
+                          (output, chore) =>
+                            output.concat(Object.values(chore)),
+                          []
+                        )
+                        .join(', ')}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ function App() {
   /// this way, when household/user adds information to db, chore wheel can reflect
   /// those changes visually
   const [roomieUpdated, setRoomieUpdated] = useState<boolean>(false);
+  const [choreUpdated, setChoreUpdated] = useState<boolean>(false);
 
   return (
     <>
@@ -29,8 +30,14 @@ function App() {
           ROOMIES
         </h1>
         <div id='Sub' className='flex h-full'>
-          <Interface setRoomieUpdated={setRoomieUpdated} />
-          <ChoreWheel roomieUpdated={roomieUpdated} />
+          <Interface
+            setChoreUpdated={setChoreUpdated}
+            setRoomieUpdated={setRoomieUpdated}
+          />
+          <ChoreWheel
+            choreUpdated={choreUpdated}
+            roomieUpdated={roomieUpdated}
+          />
         </div>
       </div>
     </>
