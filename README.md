@@ -1,54 +1,100 @@
-# React + TypeScript + Vite
+# 🧹 Roomies – Chore Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Roomies is a full-stack task coordination platform built to simplify chore sharing in multi-user households. Users can create, assign, and track recurring tasks with clear visibility across tenants.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🏠 Multi-user household support
+- ✅ Create, read, update, and delete (CRUD) tasks
+- 🔁 Recurring task tracking
+- 👥 Role-based access (e.g., roommates vs admins)
+- 📄 Responsive UI for clean task navigation
+- 📊 PostgreSQL schema optimized for relational data
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 🛠 Tech Stack
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+**Frontend:**  
+- React  
+- HTML/CSS  
+- Axios  
+
+**Backend:**  
+- Node.js  
+- Express.js  
+- PostgreSQL  
+- Knex (or Sequelize, if applicable)  
+
+**Architecture & Tools:**  
+- MVC structure  
+- Git & GitHub  
+- Postman for testing  
+- Render/Vercel for deployment (if applicable)
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/roomies.git
+cd roomies
+
+# Install dependencies
+npm install
+
+# Set up database (PostgreSQL)
+# Create .env file with DB connection info
+
+# Run migrations & seed (if available)
+npx knex migrate:latest
+npx knex seed:run
+
+# Start server
+npm start
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+> Make sure PostgreSQL is running locally or update `.env` to point to your remote DB.
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react";
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: "18.3" } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs["jsx-runtime"].rules,
-  },
-});
+## 🗂 Project Structure
+
+```
+roomies/
+├── client/            # Frontend React app
+│   ├── components/
+│   └── ...
+├── server/            # Backend Express server
+│   ├── routes/
+│   ├── controllers/
+│   ├── models/
+│   └── ...
+├── db/                # Knex migrations & seeds
+├── package.json
+└── README.md
 ```
 
-github test
+---
 
-<!-- hello :) -->
+## 🚧 Future Improvements
+
+- Authentication and user registration
+- Notifications for upcoming/overdue tasks
+- Calendar integration
+- Mobile-first redesign
+- Unit & integration tests
+
+---
+
+## 🧑‍💻 Made By
+
+- [Aditi Srivastava]
+- [Joshua Hirakawa] 
+- [Jeremy Dalton]
+- [Austin Emuang-Stubbs]
+- [Miles Barksdale]
+- [Amrita B]
